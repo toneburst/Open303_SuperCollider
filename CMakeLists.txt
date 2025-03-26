@@ -67,6 +67,7 @@ endif()
 set(Open303_cpp_files
     plugins/Open303/Open303.hpp
     plugins/Open303/Open303.cpp
+    # Open303 files
     plugins/Open303/lib/Open303/Source/DSPCode/GlobalDefinitions.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_AnalogEnvelope.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_DecayEnvelope.cpp
@@ -107,6 +108,9 @@ set(Open303_cpp_files
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_FunctionTemplates.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_NumberManipulations.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_TeeBeeFilter.h
+    # Shruthi-1 files
+    plugins/Open303/lib/Shruthi-1/shruthi/note_stack.h
+    plugins/Open303/lib/Shruthi-1/shruthi/note_stack.cc
 )
 set(Open303_sc_files
     plugins/Open303/Open303.sc

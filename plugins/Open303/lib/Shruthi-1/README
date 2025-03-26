@@ -1,0 +1,19 @@
+Shruthi-1, a digital/analog hybrid MIDI monosynth.
+
+This project is a redesign of the original Shruti-1, with a spec'ed up CPU,
+and a focus on easy upgrades/modification of the analog section.
+The ATMega644p allows new features in the firmware -- a larger selection of
+oscillator algorithms, a bigger selection of wavetables, and a tiny sequencer.
+
+Original developer: Emilie Gillet (emilie.o.gillet@gmail.com)
+
+The firmware is released under a GPL3.0 license. It includes a
+reimplementation of the formant synthesis algorithm used in Peter Knight's
+Cantarino speech synthesizer.
+
+The PCB layouts and schematics (in /hardware/shruthi/design/pcb)
+are released under a Creative Commons cc-by-sa 3.0 license - except for some
+discontinued filter boards which were released under a cc-by-nc-sa 3.0 license.
+
+Documentation, analyses, simulations and 3D models are released under a
+Creative Commons cc-by-sa 3.0 license.

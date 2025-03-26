@@ -6,6 +6,7 @@ SuperCollider source must be in same directory as plugin project.
 
 To create build files, run
 cmake .. DSC_PATH=../supercollider -DCMAKE_BUILD_TYPE=Debug
+
 from project build directory (create if required).
 
 Then run build from plugin project root
@@ -30,4 +31,3 @@ https://github.com/pichenettes/shruthi-1/blob/master/shruthi/note_stack.h
 
 Shows implementation?
 https://github.com/pichenettes/shruthi-1/blob/master/shruthi/part.h
-

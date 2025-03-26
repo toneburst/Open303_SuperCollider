@@ -1,0 +1,249 @@
+v0.97 --------------------------------------------------------------------------
+
+SYNTHESIS
+
+- The envelopes have a different behaviour - the attack does not reset 0 at the
+beginning of each note, but rather starts from the current level of the
+envelope.
+- The way velocity is managed in the context of note priority handling has been
+changed. When you play and hold a note, play a new note and release it, the
+held note is retriggered with its original velocity.
+- Phase increments are computed using a new interpolation technique, saving
+1.3kb of code size.
+
+FILTER BOARD HANDLING
+
+- Support for the "LP2+Delay" filter board.
+
+UI
+
+- When using the programmer, the screen shows the value of the edited parameter.
+
+
+v0.96 --------------------------------------------------------------------------
+
+SYNTHESIS
+
+- The LFSR used for the noise oscillator can now be reset by oscillator sync.
+This allows the creation of pitched sounds with a very rich timbre.
+- Constant values have been introduced in the mod matrix. They can be combined
+with operators to attenuate, translate, or quantize a modulation source by a
+known value.
+- A Quantize operation has been added to the operators. It reduces the bit-depth
+of a modulation source to create a Sample & Hold like effect on any modulation.
+- A Lag processor operation has been added to the operators. It smoothes the
+slope of a modulation source to create more progressive modulations.
+- Two MIDI channel/note combo can be defined as "triggers". When such a MIDI
+message is received, a note is not played. Instead, a modulation source
+("trigger 1" and "trigger 2" in the mod matrix) changes. This can be used to
+trigger effects (such as a pitch change or LFO speed boost) from a keyboard or
+an external MIDI sequencer.
+- 2 new modulation destinations, "env 1" and "env 2" allow the envelopes to be
+triggered whenever a modulation source crosses a threshold.
+- A new mixing mode, "duo", allows the synth to be used in a pseudo-duophonic
+mode. The least recently played note is played on osc 2, and the most recently
+played note is played on osc 1.
+- 3 new mixing modes, "2 steps", "4 steps" and "8 steps" allow the oscillators
+(or oscillators, sub-oscillator and noise source) to be triggered rythmically
+at each note.
+- A new mixing mode, "seqmix" allows the oscillators/sub/noise sources to be
+rythmically disabled according to the pattern input in the step sequencer.
+This allows very crude rythmic patterns to be programmed (using noise as a
+snare drum and the sub-oscillator as a kick).
+- The attack time modulation destination now accepts both positive (faster
+attack) and negative (slower attack) modulations.
+
+FILTER BOARD HANDLING
+
+- The cutoff range of the Polivoks filter board has been shifted up by one
+octave.
+- Support for the "4-Pole Mission" filter board.
+
+CODE
+
+- 256 bytes have been saved by using the same table for the lowest octaves of
+the triangle oscillator.
+- 129 bytes have been saved by simplifying the "vibes" wavetable.
+- A bug that caused random corruption of an unused memory area during program
+startup has been fixed.
+- 2.5 kbytes have been saved by de-specialization the Oscillators code.
+
+
+v0.95 --------------------------------------------------------------------------
+
+SYNTHESIS
+
+- A page has been added to configure the routing of the Polivoks filter board.
+- The page showing the hpf settings for the SSM2044 filter board simultaneously
+displays the cutoff/resonance of the lpf - allowing both filters to be tweaked
+at the same time.
+- Added a cutoff-coupling mode for the dual SVF filter board.
+- MIDI notes in the 120-128 range are no longer wrapped to 108-116.
+- Fixed a bug causing a faint VCA bleed with some specific combinations of
+modulation sources routed to the VCA.
+- Added a new mixing mode, "fold", which equally mixes oscillator 1 and 2 and
+send the output to a fold-back distortion, the amount of which is controlled by
+"mix"
+- Added a new mixing mode, "bits", which equally mixes oscillator 1 and 2 and
+send the output to a bit-reduction distortion, the amount of which is controlled
+by "mix".
+
+CODE
+- 512 bytes have been saved by using the same table for the lowest octaves of
+the triangle oscillator.
+
+UI
+
+- Fixed a bug occurring when scrolling backwards from the second filter page.
+- Fixed a bug preventing the tempo and LFO rate parameters to be edited with the pot, when the unit is configured in "snap" mode.
+
+
+v0.94 --------------------------------------------------------------------------
+
+SYNTHESIS
+
+- Fixed a bug that caused a loudness drop of the vowel oscillator
+- Fixed a bug that caused the filtered noise "oscillator" to output incorrect
+values when the parameter was set to a high value.
+- The envelopes now have a smoother curve, and slower attack / decay / release
+times can be achieved.
+- Fixed a timing bug that caused the main oscillators pitch to be off by 8
+cents.
+
+CODE
+
+- The z-family oscillators now share common code, saving ~700 bytes of code.
+- Resource table de-duplication saved ~200 bytes of code.
+- The vowel oscillator code has been simplified by ~100 bytes.
+- MIDI input is polled from the 39kHz audio interrupt rather than
+interrupt-driven. This saves ~80 CPU cycles per byte of MIDI data received,
+since there is no extra ISR intro/outtro when a MIDI byte is received.
+
+MIDI IMPLEMENTATION
+
+- The Shruthi-1 now uses an officially registered manufacturer ID for SysEx
+communication. As a result, patch dumps/backups made with previous versions will
+still be readable with v0.94 and onwards, but patch dumps made with v0.94 won't
+be readable with earlier versions.
+- CC90 and CC87 can be used to control the cutoff frequency and resonance of the
+second filter on the dual SVF filter board.
+
+
+v0.93 --------------------------------------------------------------------------
+
+SYNTHESIS
+
+- A menu has been added to control the routing of the dual SVF filter board.
+- The wavetable synthesis code has been rewritten to allow interpolation
+between waveforms which are not contiguous in memory. This allows the definition
+of wavetables which are a subset, or a permutation, or a mix of the existing
+wavetables. 10 such wavetables have been added to oscillator 1, approximating
+classic Waldorf Microwave wavetables.
+
+MIDI
+
+- Upon reception of a program change, the active patch number is updated (in
+v0.92, the patch was loaded but the patch number was not changed).
+
+CODE
+
+- Removed some cruft left after the oscillators rendering rewrite of v0.92.
+Saved 110 bytes of code.
+- The classes and functions in the 'hal' directory are now an independent
+project called AVRil.
+- I/O pins are now referenced by port/bit rather than by an Arduino-style pin
+number.
+
+
+v0.92 --------------------------------------------------------------------------
+
+UI
+
+- Patches can be tweaked from the load/save page. In this case, the 4 knobs have
+the functions assigned to them in the performance page for this patch.
+- The Shruthi-1 can be configured to boot directly on the presets page (aka
+"presets mode").
+- Non-blocking ADC scanning increases UI responsiveness.
+- The "mix" and "osc 1" pages have been modified. The sub-oscillator settings
+are now on the same page as the oscillator 1 settings.
+- Holding the load/save switch (S6) pressed down while rotating the encoder
+allows the values to be incremented/decremented by steps of 10.
+Useful for browsing patches!
+- Patches / sequences loading and saving can now be linked together (loading
+patch 15 simultaneously loads sequence 15...). This can be enabled/disabled by
+pressing S6+S5 in the load/save page.
+
+SYSTEM
+
+- Different options are available for using the 4 CV: 4 CV ins (assignable in
+mod matrix -- default setting), 32-knobs programmer, or simple mapping to
+cutoff, param1/param2 for pedals and joystick.
+- External eeproms larger than 64kb are supported, up to 512kb. Note that when
+a 512kb eeprom is used, the last 64kb block is not used (this is due to the
+fact that 16-bit arithmetic is used to compute addresses, and that the
+address space includes the 16kb of the internal eeprom).
+
+MIDI
+
+- SysEx Patch request command (0x11 0x00). Upon reception of this command, the
+Shruthi dumps the currently edited patch. Might be useful for an editor!
+- SysEx Patch write command (0x21 0x00 0xnn 0xnn). Upon reception of this
+command, the Shruthi writes the current patch to a target memory.
+- Support for NRPN increment/decrement.
+- The SysEx backup protocol has been extended to support backing up / restoring
+more than 16kb of patch data.
+- A bank and program change message is sent whenever a preset is loaded.
+- Bank change messages are handled, to allow patches above 128 to be loaded.
+- Volume change messages (CC 7) are handled.
+- A new MIDI out mode has been added in which only user-initiated knobs
+changes are sent to the MIDI out. This mode is ideal for using the Shruthi with
+both its IN/OUT ports connected to the same device. The other modes are not
+suitable for operation in this configuration since they can cause unwanted MIDI
+loops.
+
+SYNTHESIS
+
+- The shape of the envelope (approximation of an exponential) has been refined.
+- The "2 bits" modulation destination is gone, since there are now better ways
+(extra TX pin, shift register out) to communicate with a filter board.
+- A new modulation destination (replacing "2 bits") allows the attack of both
+envelopes to be sped up. This settings is particularly useful when velocity
+is used as a modulation source.
+- The "digital silencing" of oscillators when envelopes have reached zero has
+been improved. The oscillators are now digitally silenced whenever the VCA
+destination in the modulation matrix has reached a value of zero.
+- The noise source in the mixer is now refreshed at 40kHz instead of 10kHz,
+giving it a richer timbre.
+- The phase counters are now 24 bits instead of 16 bits. This allows more subtle
+detuning effects between the oscillators, especially in the lowest notes.
+- The audio engine has been rewritten from a "breadth first" to a "depth first"
+perspective, and as a result, is faster.
+- As a result of the audio engine rewrite, the vowel oscillator can now be used
+with the noise and sub generators.
+- The crossfading between wavetable zones is more subtle on the pulse
+oscillator (square with a parameter > 0).
+- To make more room for upcoming features, the waves wavetable has been
+downsampled to 128 samples/waveform instead of 256.
+- New mixing modes (>>4, >>8) allow the oscillators signal to be
+bitcrushed (sample rate reduction with a S&H) before being sent to the filter.
+- A new feature ("operators") allows 2 pairs of modulation sources to be
+combined through a variety of mathematical operations (addition, multiplication,
+comparison) to yield two new complex modulation sources.
+
+CODE
+
+- Various code size optimizations saved 1kb.
+- The modulation matrix processing code has been simplified.
+- Changed compilation flags to achieve smaller code size.
+- A menu in the UI and code infrastructure is ready to provide filter-board
+specific menus and parameters in future firmware revisions.
+
+
+v0.91 --------------------------------------------------------------------------
+
+- Improved encoder debouncing/decoding algorithm.
+- Changed "load" label to "browse" in patch load/save page.
+
+v0.90 --------------------------------------------------------------------------
+
+- Original release.
