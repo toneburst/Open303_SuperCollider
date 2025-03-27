@@ -36,13 +36,15 @@ MIDIIn.connectAll;
 MIDIFunc.noteOn({ |vel, num|
 	"SCLANG NOTEON % \n".postf(num);
 	// Check if stack is empty
-	~bassline.set(\notenum, num, \notevel, vel, \notetrigger, 1.0);
+	~bassline.set(\notenum, num, \notevel, vel);
+	~bassline.set(\notetrigger, 1.0);
 });
 
 MIDIFunc.noteOff({ |vel, num|
 	"SCLANG NOTEOFF %\n".postf(num);
 	// Remove note from the stack
-	~bassline.set(\notenum, num, \notevel, 0.0, \notetrigger, 1.0);
+	~bassline.set(\notenum, num, \notevel, 0.0);
+	~bassline.set(\notetrigger, 1.0);
 });
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
@@ -50,7 +52,7 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:21);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set("cutoff", val / 127);
+	~bassline.set(\cutoff, val / 127);
 }, ccNum:22);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|

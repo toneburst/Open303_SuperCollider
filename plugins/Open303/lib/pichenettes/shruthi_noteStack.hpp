@@ -33,6 +33,9 @@
 // Additionally, an array of pointers is stored to allow random access to the
 // n-th note, sorted by ascending order of pitch (for arpeggiation).
 //
+// Source:
+// https://github.com/pichenettes/shruthi-1/blob/master/shruthi/note_stack.h
+//
 // (Very) minor modifications by toneburst 2025
 // Converted all uint8_t vars to int
 
@@ -93,9 +96,9 @@ namespace shruthi
 
   private:
     int size_;
-    NoteEntry pool_[kNoteStackSize + 1];     // First element is a dummy node!
-    int root_ptr_;                       // Base 1.
-    int sorted_ptr_[kNoteStackSize + 1]; // Base 1.
+    NoteEntry pool_[kNoteStackSize + 1];  // First element is a dummy node!
+    int root_ptr_;                        // Base 1.
+    int sorted_ptr_[kNoteStackSize + 1];  // Base 1.
   };
 
 } // End namespace shruthi

@@ -8,12 +8,19 @@ To create build files, run
 ```
 cmake .. DSC_PATH=../supercollider -DCMAKE_BUILD_TYPE=Debug
 ```
-
-from project build directory (create if required).
+...from project build directory (create if required).
 
 Then run build from plugin project root
 ```
 cmake --build build --config "Release" --target install
+```
+
+## Symlink to SuperCollider Extensions
+
+Adding a symlink to the SC Extensions folder means when plugin is build it will automatically be installed.
+
+```
+ln -s /Users/<username>/Library/Application\ Support/SuperCollider/Extensions/toneburst <path to plugin project build folder> 
 ```
 
 ## Including Additional Source Files:
@@ -25,8 +32,13 @@ If including other C++ files, paths for all used used (implementation and header
 
 # Git Setup:
 
-Set global git username and email
+Check out SuperCollider
+```
+git clone --recursive git://github.com/supercollider/supercollider.git
+(from plugin project containing folder)
+```
 
+Set global git username and email
 ```
 git config --global user.email yournew@email.com
 git config --global user.name yournewgoodname
