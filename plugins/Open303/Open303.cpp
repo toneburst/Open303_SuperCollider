@@ -11,6 +11,9 @@
 // Global functions (for parameter scaling)
 #include "lib/Open303/Source/DSPCode/GlobalFunctions.h"
 
+// Shruthi-1 note-stack (thanks as ever @Pichenettes)
+#include "lib/shruthi_noteStack.hpp"
+
 #include "Open303.hpp"
 
 static InterfaceTable* ft;
@@ -19,6 +22,9 @@ namespace Open303 {
 
     // Instantiate Open303 object
     rosic::Open303 o303;
+
+    // Shruthi-1 note-stack
+    shruthi::NoteStack noteStack;
 
     // CONSTRUCTOR
     Open303::Open303() {
@@ -84,14 +90,23 @@ namespace Open303 {
         // Process note on/off messages
         // Leave note-handling to Open303 builtin functions
         if(noteevent == 1 && lastnoteevent == 0) {
+
             // Check note velocity to determine if this is a note-on or note-off event
             if(notevel > 0) {
                 // Note-ON
+
+                noteStack.NoteOn(notenum, notevel);
+                cout << "PLUGIN NOTEON NOTESTACK SIZE " << noteStack.size() << "\n";
+
                 // 3rd arg is 'detune'. Alternative tunings not implemented, so we'll leave this at 0.0
                 cout << "PLUGIN NOTEON " << notenum << "\n";
                 o303.noteOn(notenum, notevel, 0.0);
             } else {
                 // Note-OFF (note-on event with velocity 0, slightly confusingly)
+
+                noteStack.NoteOff(notenum);
+                cout << "PLUGIN NOTEOFF NOTESTACK SIZE " << noteStack.size() << "\n";
+
                 cout << "PLUGIN NOTEOFF " << notenum << "\n";
                 o303.noteOn(notenum, 0, 0.0);
             }
@@ -143,7 +158,6 @@ namespace Open303 {
 
         // Fill output buffer with nSamples Open303 synth samples
         for (int i = 0; i < nSamples; ++i) {
-
             // Update synth params with interpolated value
             // Cast floats to doubles
             o303.setWaveform(   static_cast<double>(slopedWaveform.consume()));
