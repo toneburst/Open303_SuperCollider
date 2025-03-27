@@ -34,22 +34,20 @@
 // n-th note, sorted by ascending order of pitch (for arpeggiation).
 //
 // (Very) minor modifications by toneburst 2025
+// Converted all uint8_t vars to int
 
 #ifndef shruthi_noteStack_h
 #define shruthi_noteStack_h
 
-// Include library for integer types (needed for uint_8_t)
-#include <inttypes.h>
-
-static const uint8_t kNoteStackSize = 8;
+static const int kNoteStackSize = 8;
 
 namespace shruthi
 {
   struct NoteEntry
   {
-    uint8_t note;
-    uint8_t velocity;
-    uint8_t next_ptr; // Base 1.
+    int note;
+    int velocity;
+    int next_ptr; // Base 1.
   };
 
   class NoteStack
@@ -59,45 +57,45 @@ namespace shruthi
 
     void Init() { Clear(); }
 
-    void NoteOn(uint8_t note, uint8_t velocity);
-    void NoteOff(uint8_t note);
+    void NoteOn(int note, int velocity);
+    void NoteOff(int note);
     void Clear();
 
-    uint8_t size() { return size_; }
-    uint8_t max_size() { return kNoteStackSize; }
+    int size() { return size_; }
+    int max_size() { return kNoteStackSize; }
     const NoteEntry &most_recent_note() { return pool_[root_ptr_]; }
     const NoteEntry &least_recent_note()
     {
-      uint8_t current = root_ptr_;
+      int current = root_ptr_;
       while (current && pool_[current].next_ptr)
       {
         current = pool_[current].next_ptr;
       }
       return pool_[current];
     }
-    const NoteEntry &sorted_note(uint8_t index)
+    const NoteEntry &sorted_note(int index)
     {
       return pool_[sorted_ptr_[index]];
     }
-    const NoteEntry &played_note(uint8_t index) const
+    const NoteEntry &played_note(int index) const
     {
-      uint8_t current = root_ptr_;
+      int current = root_ptr_;
       index = size_ - index - 1;
-      for (uint8_t i = 0; i < index; ++i)
+      for (int i = 0; i < index; ++i)
       {
         current = pool_[current].next_ptr;
       }
       return pool_[current];
     }
-    const NoteEntry &note(uint8_t index) { return pool_[index]; }
-    NoteEntry *mutable_note(uint8_t index) { return &pool_[index]; }
+    const NoteEntry &note(int index) { return pool_[index]; }
+    NoteEntry *mutable_note(int index) { return &pool_[index]; }
     const NoteEntry &dummy() { return pool_[0]; }
 
   private:
-    uint8_t size_;
+    int size_;
     NoteEntry pool_[kNoteStackSize + 1];     // First element is a dummy node!
-    uint8_t root_ptr_;                       // Base 1.
-    uint8_t sorted_ptr_[kNoteStackSize + 1]; // Base 1.
+    int root_ptr_;                       // Base 1.
+    int sorted_ptr_[kNoteStackSize + 1]; // Base 1.
   };
 
 } // End namespace shruthi

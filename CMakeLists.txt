@@ -109,8 +109,8 @@ set(Open303_cpp_files
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_NumberManipulations.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_TeeBeeFilter.h
     # Shruthi-1 files
-    plugins/Open303/lib/shruthi_noteStack.hpp
-    plugins/Open303/lib/shruthi_noteStack.cpp
+    plugins/Open303/lib/pichenettes/shruthi_noteStack.hpp
+    plugins/Open303/lib/pichenettes/shruthi_noteStack.cpp
 )
 set(Open303_sc_files
     plugins/Open303/Open303.sc

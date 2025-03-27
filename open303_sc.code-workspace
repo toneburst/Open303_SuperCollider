@@ -22,7 +22,8 @@
 			"system_error": "cpp",
 			"vector": "cpp",
 			"iostream": "cpp",
-			"__config": "cpp"
+			"__config": "cpp",
+			"ostream": "cpp"
 		}
 	}
 }

@@ -12,7 +12,7 @@
 #include "lib/Open303/Source/DSPCode/GlobalFunctions.h"
 
 // Shruthi-1 note-stack (thanks as ever @Pichenettes)
-#include "lib/shruthi_noteStack.hpp"
+#include "lib/pichenettes/shruthi_noteStack.hpp"
 
 #include "Open303.hpp"
 
@@ -43,6 +43,9 @@ namespace Open303 {
 
         // Set Open303 sample-rate
         o303.setSampleRate(srate);
+
+        // Init note-stack
+        noteStack.Init();
 
         mCalcFunc = make_calc_function<Open303, &Open303::next>();
         next(1);
@@ -94,51 +97,45 @@ namespace Open303 {
             // Check note velocity to determine if this is a note-on or note-off event
             if(notevel > 0) {
                 // Note-ON
-
                 noteStack.NoteOn(notenum, notevel);
-                cout << "PLUGIN NOTEON NOTESTACK SIZE " << noteStack.size() << "\n";
-
                 // 3rd arg is 'detune'. Alternative tunings not implemented, so we'll leave this at 0.0
-                cout << "PLUGIN NOTEON " << notenum << "\n";
-                o303.noteOn(notenum, notevel, 0.0);
+                cout << "PLUGIN NOTEON " << notenum << " NOTESTACK SIZE " << noteStack.size() << "\n";
+                //o303.noteOn(notenum, notevel, 0.0);
             } else {
                 // Note-OFF (note-on event with velocity 0, slightly confusingly)
-
                 noteStack.NoteOff(notenum);
-                cout << "PLUGIN NOTEOFF NOTESTACK SIZE " << noteStack.size() << "\n";
-
-                cout << "PLUGIN NOTEOFF " << notenum << "\n";
-                o303.noteOn(notenum, 0, 0.0);
+                cout << "PLUGIN NOTEOFF " << notenum << " NOTESTACK SIZE " << noteStack.size() << "\n";
+                //o303.noteOn(notenum, 0, 0.0);
             }
         }
         // Trigger/Release note
-        if(noteevent == 2 && lastnoteevent == 0) {
-            if(notevel >= 100) {
-                // Trigger note with accent
-                o303.triggerNote(notenum, true);
-                cout << "PLUGIN NOTEON " << notenum << " ACCENT\n";
-            } else if(notevel == 0) {
-                // 0 velocity. Release note
-                o303.releaseNote(notenum);
-                cout << "PLUGIN NOTEOFF " << notenum << "\n";
-            } else {
-                // Trigger note without accent
-                o303.triggerNote(notenum, false);
-                cout << "PLUGIN NOTEON " << notenum << " NO ACCENT\n";
-            }
-        }
-        // Slide to note
-        if(noteevent == 3 && lastnoteevent == 0) {
-            if(notevel >= 100) {
-                // Slide to note with accent
-                cout << "PLUGIN SLIDE TO NOTE " << notenum << " WITH ACCENT\n";
-                o303.slideToNote(notenum, true);
-            } else {
-                // Slide to note without accent
-                cout << "PLUGIN SLIDE TO NOTE " << notenum << " NO ACCENT\n";       
-                o303.slideToNote(notenum, false);
-            }
-        }
+        // if(noteevent == 2 && lastnoteevent == 0) {
+        //     if(notevel >= 100) {
+        //         // Trigger note with accent
+        //         o303.triggerNote(notenum, true);
+        //         cout << "PLUGIN NOTEON " << notenum << " ACCENT\n";
+        //     } else if(notevel == 0) {
+        //         // 0 velocity. Release note
+        //         o303.releaseNote(notenum);
+        //         cout << "PLUGIN NOTEOFF " << notenum << "\n";
+        //     } else {
+        //         // Trigger note without accent
+        //         o303.triggerNote(notenum, false);
+        //         cout << "PLUGIN NOTEON " << notenum << " NO ACCENT\n";
+        //     }
+        // }
+        // // Slide to note
+        // if(noteevent == 3 && lastnoteevent == 0) {
+        //     if(notevel >= 100) {
+        //         // Slide to note with accent
+        //         cout << "PLUGIN SLIDE TO NOTE " << notenum << " WITH ACCENT\n";
+        //         o303.slideToNote(notenum, true);
+        //     } else {
+        //         // Slide to note without accent
+        //         cout << "PLUGIN SLIDE TO NOTE " << notenum << " NO ACCENT\n";       
+        //         o303.slideToNote(notenum, false);
+        //     }
+        // }
         // Update previous note-event
         lastnoteevent = noteevent;
 

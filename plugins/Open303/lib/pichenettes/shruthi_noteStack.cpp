@@ -24,9 +24,9 @@
 namespace shruthi
 {
 
-  static const uint8_t kFreeSlot = 0xff;
+  static const int kFreeSlot = 0xff;
 
-  void NoteStack::NoteOn(uint8_t note, uint8_t velocity)
+  void NoteStack::NoteOn(int note, int velocity)
   {
     // Remove the note from the list first (in case it is already here).
     NoteOff(note);
@@ -34,8 +34,8 @@ namespace shruthi
     // stack.
     if (size_ == kNoteStackSize)
     {
-      uint8_t least_recent_note;
-      for (uint8_t i = 1; i <= kNoteStackSize; ++i)
+      int least_recent_note;
+      for (int i = 1; i <= kNoteStackSize; ++i)
       {
         if (pool_[i].next_ptr == 0)
         {
@@ -45,8 +45,8 @@ namespace shruthi
       NoteOff(least_recent_note);
     }
     // Now we are ready to insert the new note. Find a free slot to insert it.
-    uint8_t free_slot;
-    for (uint8_t i = 1; i <= kNoteStackSize; ++i)
+    int free_slot;
+    for (int i = 1; i <= kNoteStackSize; ++i)
     {
       if (pool_[i].note == kFreeSlot)
       {
@@ -58,11 +58,11 @@ namespace shruthi
     pool_[free_slot].velocity = velocity;
     root_ptr_ = free_slot;
     // The last step consists in inserting the note in the sorted list.
-    for (uint8_t i = 0; i < size_; ++i)
+    for (int i = 0; i < size_; ++i)
     {
       if (pool_[sorted_ptr_[i]].note > note)
       {
-        for (uint8_t j = size_; j > i; --j)
+        for (int j = size_; j > i; --j)
         {
           sorted_ptr_[j] = sorted_ptr_[j - 1];
         }
@@ -78,10 +78,10 @@ namespace shruthi
     ++size_;
   }
 
-  void NoteStack::NoteOff(uint8_t note)
+  void NoteStack::NoteOff(int note)
   {
-    uint8_t current = root_ptr_;
-    uint8_t previous = 0;
+    int current = root_ptr_;
+    int previous = 0;
     while (current)
     {
       if (pool_[current].note == note)
@@ -101,11 +101,11 @@ namespace shruthi
       {
         root_ptr_ = pool_[current].next_ptr;
       }
-      for (uint8_t i = 0; i < size_; ++i)
+      for (int i = 0; i < size_; ++i)
       {
         if (sorted_ptr_[i] == current)
         {
-          for (uint8_t j = i; j < size_ - 1; ++j)
+          for (int j = i; j < size_ - 1; ++j)
           {
             sorted_ptr_[j] = sorted_ptr_[j + 1];
           }
@@ -125,7 +125,7 @@ namespace shruthi
     memset(pool_ + 1, 0, sizeof(NoteEntry) * kNoteStackSize);
     memset(sorted_ptr_ + 1, 0, kNoteStackSize);
     root_ptr_ = 0;
-    for (uint8_t i = 0; i <= kNoteStackSize; ++i)
+    for (int i = 0; i <= kNoteStackSize; ++i)
     {
       pool_[i].note = kFreeSlot;
     }
