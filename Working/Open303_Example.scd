@@ -4,7 +4,6 @@ s.waitForBoot {
 		arg out,
 		notenum = 60.0,
 		notevel = 64.0,
-		notealloff = 0.0,
 		waveform = 0.85,
 		cutoff = 0.229,
 		resonance = 0.5,
@@ -12,8 +11,10 @@ s.waitForBoot {
 		decay = 0.5,
 		accent = 0.5,
 		volume = 0.9;
+
 		// Declare vars
 		var notetrigger = NamedControl.tr(\notetrigger); // Ensures 'noteevent' is only ever positive for 1 k-rate cycle!
+		var notealloff = NamedControl.tr(\notealloff);
 		// Create output
 		var result;
 		result = Open303.ar(notetrigger, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume);
@@ -27,6 +28,7 @@ s.waitForBoot {
 
 // Create bassline synth object
 ~bassline = Synth(\AcidBass);
+~notecount = 0;
 
 // Start MIDI
 MIDIClient.init;
@@ -35,16 +37,25 @@ MIDIIn.connectAll;
 // MIDI functions
 MIDIFunc.noteOn({ |vel, num|
 	"SCLANG NOTEON % \n".postf(num);
-	// Check if stack is empty
-	~bassline.set(\notenum, num, \notevel, vel);
-	~bassline.set(\notetrigger, 1.0);
+	~bassline.set(\notenum, num, \notevel, vel, \notetrigger, 1.0);
+	// Increment note-counter
+	~notecount = ~notecount + 1;
 });
 
 MIDIFunc.noteOff({ |vel, num|
 	"SCLANG NOTEOFF %\n".postf(num);
-	// Remove note from the stack
-	~bassline.set(\notenum, num, \notevel, 0.0);
-	~bassline.set(\notetrigger, 1.0);
+	// Decrement note-counter
+	~notecount = ~notecount -1;
+	// Check if all notes should be off at this point
+	if(~notecount == 0) {
+		// If yes send all-note-off signal to synth to un-stick any stuck notes
+		"SCLANG ALL NOTES OFF %\n".postf();
+		~bassline.set(\notealloff, 1.0);
+	} {
+		// At least one note is still being held, so we send note off for this note
+		"SCLANG NOTEOFF % \n".postf(num);
+		~bassline.set(\notenum, num, \notevel, 0.0, \notetrigger, 1.0);
+	}
 });
 
 MIDIFunc.cc({ |val, ccNum, chan, src|

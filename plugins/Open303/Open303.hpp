@@ -27,6 +27,7 @@ private:
     double srate {};
     int lastnoteevent {0};
     int lastnotealloff {0};
+    int accentthreshold = 100;
 
     // Param state (initialised in constructor)
     float m_waveform;

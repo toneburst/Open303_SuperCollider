@@ -58,12 +58,13 @@ namespace Open303 {
         // (at Audio rate, the input values are supplied in a block of nSamples values (as floats).
         // "in0" is the first value in the block (although all other values are probably the same))
 
-        // Note parameters. Synth expects ints
+        // Most-recent note parameters. Synth expects ints
         const int noteevent    = static_cast<int>(in0(NOTEEVENT));
         const int notenum      = static_cast<int>(in0(NOTENUM));
         const int notevel      = static_cast<int>(in0(NOTEVEL));
-        const int notealloff   = static_cast<int>(in0(NOTEALLOFF));
-        const bool accent      = (notevel >= 100) ? true : false;
+        const int notealloff   = static_cast<int>(in0(NOTEALLOFF));    
+        // Accent on/off
+        const bool accent      = (notevel >= accentthreshold) ? true : false;
 
         // Interpolated synth control parameters. Synth expects doubles, inputs are floats.
         // Conversion functions from Globalfunctions.h
@@ -93,8 +94,8 @@ namespace Open303 {
 
         // Process note on/off messages
         // Use Shruthi-1 note-stack
-        //if(noteevent == 1 && lastnoteevent == 0) {
-        if(noteevent == 1) {
+        if(noteevent == 1 && lastnoteevent == 0) {
+        //if(noteevent == 1) {
             // Check note velocity to determine if this is a note-on or note-off event
             if(notevel > 0) {
                 // NOTE-ON             
@@ -126,13 +127,16 @@ namespace Open303 {
                 }
             }
         }
-
         // Update previous note-event
         lastnoteevent = noteevent;
 
         // Detect all-notes-off trigger
         if(notealloff == 1 && lastnotealloff == 0) {
+            // Trigger synth all-notes-off
             o303.allNotesOff();
+            // Clear note-stack
+            noteStack.Clear();
+            cout << "PLUGIN ALL NOTES OFF\n";
         }
         // Update previous all-note-off
         lastnotealloff = notealloff;
