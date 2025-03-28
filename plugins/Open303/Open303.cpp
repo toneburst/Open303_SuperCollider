@@ -103,11 +103,11 @@ namespace Open303 {
                 if(noteStack.size() == 0) {
                     // No note in stack, we can play the incoming note
                     o303.triggerNote(notenum, accent);
-                    cout << "PLUGIN TRIGGER NOTE " << notenum << "\n";
+                    //cout << "PLUGIN TRIGGER NOTE " << notenum << "\n";
                 } else {
                     // There's at least one note in the stack (a note is already playing). We need to slide to the incoming note
                     o303.slideToNote(notenum, accent);
-                    cout << "PLUGIN SLIDETO NOTE " << notenum << "\n";
+                    //cout << "PLUGIN SLIDETO NOTE " << notenum << "\n";
                 }
                 // add note to note-stack
                 noteStack.NoteOn(notenum, notevel);      
@@ -119,11 +119,11 @@ namespace Open303 {
                 if(noteStack.size() == 0) {
                     // No notes currently playing, we can release the current note
                     o303.releaseNote(notenum);
-                    cout << "PLUGIN RELEASE NOTE " << notenum << "\n";
+                    //cout << "PLUGIN RELEASE NOTE " << notenum << "\n";
                 } else {
                     // Slide to the most recent note remaining in the stack
                     o303.slideToNote(noteStack.most_recent_note().note, false);
-                    cout << "PLUGIN SLIDETO NOTE " << notenum << "\n";
+                    //cout << "PLUGIN SLIDETO NOTE " << notenum << "\n";
                 }
             }
         }
@@ -136,7 +136,7 @@ namespace Open303 {
             o303.allNotesOff();
             // Clear note-stack
             noteStack.Clear();
-            cout << "PLUGIN ALL NOTES OFF\n";
+            //cout << "PLUGIN ALL NOTES OFF\n";
         }
         // Update previous all-note-off
         lastnotealloff = notealloff;
