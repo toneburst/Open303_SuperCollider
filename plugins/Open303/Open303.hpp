@@ -1,8 +1,8 @@
 // PluginOpen303.hpp
 // toneburst (the_voder@yahoo.co.uk)
 /*
-    SuperCollider plugin wrapper around Open303 TB303 emulator DSP code by Robin Schmidt
-    https://github.com/RobinSchmidt/Open303
+    SuperCollider plugin wrapper around Open303 TB303 emulator DSP code by Robin
+   Schmidt https://github.com/RobinSchmidt/Open303
 */
 
 #pragma once
@@ -13,54 +13,56 @@ namespace Open303 {
 
 class Open303 : public SCUnit {
 public:
-    /////////////////
-    // Constructor //
-    /////////////////
+  /////////////////
+  // Constructor //
+  /////////////////
 
-    Open303();
+  Open303();
 
 private:
-    /////////////////////
-    // State Variables //
-    /////////////////////
 
-    double srate                {};
-    bool lastgate               {false};
-    int lastnotenum             {60};
-    int lastnotealloff          {0};
-    const int accentthreshold   {100};
+  /////////////////////
+  // State Variables //
+  /////////////////////
 
-    // Param state (initialised in constructor)
-    float m_waveform;
-    float m_cutoff;
-    float m_resonance;
-    float m_envmod;
-    float m_decay;
-    float m_accent;
-    float m_volume;
+  double m_sRate{};
+  bool   m_lastGate{false};
+  bool   m_lastNoteAllOff{0};
+  int    m_lastNoteNum{60};
+  
+  const int accentThreshold{100};
 
-    // Input inded enumeration
-    enum inputs {
-        GATE = 0,
-        NOTENUM,
-        NOTEVEL,
-        NOTEALLOFF,
-        WAVEFORM,
-        CUTOFF,
-        RESONANCE,
-        ENVMOD,
-        DECAY,
-        ACCENT,
-        VOLUME,
-        FILTERMODE
-    };
+  // Param state (initialised in constructor)
+  float m_waveform;
+  float m_cutoff;
+  float m_resonance;
+  float m_envmod;
+  float m_decay;
+  float m_accent;
+  float m_volume;
 
-    // Calc function
-    void next(int nSamples);
+  // Input inded enumeration
+  enum inputs {
+    GATE = 0,
+    NOTENUM,
+    NOTEVEL,
+    NOTEALLOFF,
+    WAVEFORM,
+    CUTOFF,
+    RESONANCE,
+    ENVMOD,
+    DECAY,
+    ACCENT,
+    VOLUME,
+    FILTERMODE
+  };
 
-    //////////////////////
-    // Member Variables //
-    //////////////////////
+  // Calc function
+  void next(int nSamples);
+
+  //////////////////////
+  // Member Variables //
+  //////////////////////
 };
 
-} // namespace Open303
+} // End namespace Open303

@@ -33,10 +33,10 @@ namespace Open303 {
         m_volume    = in0(VOLUME);
 
         // Get Sample-Rate
-        srate = fullSampleRate();
+        m_sRate = fullSampleRate();
 
         // Set Open303 sample-rate
-        o303.setSampleRate(srate);
+        o303.setSampleRate(m_sRate);
 
         mCalcFunc = make_calc_function<Open303, &Open303::next>();
         next(1);
@@ -51,10 +51,10 @@ namespace Open303 {
 
         // Most-recent note parameters. Synth expects ints
         const bool gate                     = static_cast<bool>(in0(GATE));
-        const int  notenum                  = static_cast<int>(in0(NOTENUM));
-        const int  notevel                  = static_cast<int>(in0(NOTEVEL));
-        const int  notealloff               = static_cast<int>(in0(NOTEALLOFF));    
-        const bool accent                   = (notevel >= accentthreshold);
+        const int  noteNum                  = static_cast<int>(in0(NOTENUM));
+        const int  noteVel                  = static_cast<int>(in0(NOTEVEL));
+        const bool noteAllOff               = static_cast<bool>(in0(NOTEALLOFF));    
+        const bool accent                   = (noteVel >= accentThreshold);
 
         // Other non-interpolated synth control parameters
         const int filterMode                = normalizedValueToIndex(in0(FILTERMODE), 15);
@@ -87,23 +87,23 @@ namespace Open303 {
         ///////////////////
 
         // New gate
-        if(gate && !lastgate) {
+        if(gate && !m_lastGate) {
             //cout << "PLUGIN NOTEON " << notenum << "\n";
-            o303.triggerNote(notenum, accent);
+            o303.triggerNote(noteNum, accent);
         }
         // Gate still high but note changed. Slide to new note
-        if((notenum != lastnotenum) && (gate && lastgate)) {
+        if((noteNum != m_lastNoteNum) && (gate && m_lastGate)) {
             //cout << "PLUGIN SLIDETO " << notenum << "\n";
-            o303.slideToNote(notenum, accent);
+            o303.slideToNote(noteNum, accent);
         }
         // Last note off
-        if(lastgate && !gate) {
+        if(m_lastGate && !gate) {
             //cout << "PLUGIN LAST NOTE OFF " << notenum << "\n";
             //o303.releaseNote(notenum);
             o303.allNotesOff();
         }
         // Detect all-notes-off trigger
-        if(notealloff == 1 && lastnotealloff == 0) {
+        if(noteAllOff == 1 && m_lastNoteAllOff == 0) {
             // Trigger synth all-notes-off
             //cout << "PLUGIN ALL NOTES OFF\n"
             o303.allNotesOff();
@@ -148,9 +148,9 @@ namespace Open303 {
         // Update Previous Gate/Note //
         ///////////////////////////////
 
-        lastgate        = gate;
-        lastnotenum     = notenum;
-        lastnotealloff  = notealloff;
+        m_lastGate        = gate;
+        m_lastNoteNum     = noteNum;
+        m_lastNoteAllOff  = noteAllOff;
     
     } // End Open303::next()
 
