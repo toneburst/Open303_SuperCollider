@@ -11,9 +11,6 @@
 // Global functions (for parameter scaling)
 #include "lib/Open303/Source/DSPCode/GlobalFunctions.h"
 
-// Shruthi-1 note-stack (thanks as ever @Pichenettes)
-#include "lib/pichenettes/shruthi_noteStack.hpp"
-
 #include "Open303.hpp"
 
 static InterfaceTable* ft;
@@ -22,9 +19,6 @@ namespace Open303 {
 
     // Instantiate Open303 object
     rosic::Open303 o303;
-
-    // Instantiate Shruthi-1 note-stack
-    shruthi::NoteStack noteStack;
 
     // CONSTRUCTOR
     Open303::Open303() {
@@ -44,9 +38,6 @@ namespace Open303 {
         // Set Open303 sample-rate
         o303.setSampleRate(srate);
 
-        // Init note-stack
-        noteStack.Init();
-
         mCalcFunc = make_calc_function<Open303, &Open303::next>();
         next(1);
     
@@ -59,25 +50,24 @@ namespace Open303 {
         // "in0" is the first value in the block (although all other values are probably the same))
 
         // Most-recent note parameters. Synth expects ints
-        const int noteevent    = static_cast<int>(in0(NOTEEVENT));
-        const int notenum      = static_cast<int>(in0(NOTENUM));
-        const int notevel      = static_cast<int>(in0(NOTEVEL));
-        const int notealloff   = static_cast<int>(in0(NOTEALLOFF));    
-        // Accent on/off
-        const bool accent      = (notevel >= accentthreshold) ? true : false;
+        const bool gate                     = static_cast<bool>(in0(GATE));
+        const int  notenum                  = static_cast<int>(in0(NOTENUM));
+        const int  notevel                  = static_cast<int>(in0(NOTEVEL));
+        const int  notealloff               = static_cast<int>(in0(NOTEALLOFF));    
+        const bool accent                   = (notevel >= accentthreshold);
 
         // Interpolated synth control parameters. Synth expects doubles, inputs are floats.
         // Conversion functions from Globalfunctions.h
         // Conversion function args: <function>(in, inMin, inMax, outMin, outMax);
         // Param conversion values copied from Open303VST.cpp
         // All params 0.0 - 1.0 range
-        const float waveformParam   = in0(WAVEFORM);    // No scaling required (already in 0-1 range)
-        const float cutoffParam     = linToExp(in0(CUTOFF),    0.0, 1.0, 314.0, 2394.0);        
-        const float resonanceParam  = linToLin(in0(RESONANCE), 0.0, 1.0,   0.0,  100.0);
-        const float envmodParam     = linToLin(in0(ENVMOD),    0.0, 1.0,   0.0,  100.0);
-        const float decayParam      = linToExp(in0(DECAY),     0.0, 1.0, 200.0, 2000.0);
-        const float accentParam     = linToLin(in0(ACCENT),    0.0, 1.0,   0.0,  100.0);
-        const float volumeParam     = linToLin(in0(VOLUME),    0.0, 1.0, -60.0,    0.0);
+        const float waveformParam           = in0(WAVEFORM);    // No scaling required (already in 0-1 range)
+        const float cutoffParam             = linToExp(in0(CUTOFF),    0.0, 1.0, 314.0, 2394.0);        
+        const float resonanceParam          = linToLin(in0(RESONANCE), 0.0, 1.0,   0.0,  100.0);
+        const float envmodParam             = linToLin(in0(ENVMOD),    0.0, 1.0,   0.0,  100.0);
+        const float decayParam              = linToExp(in0(DECAY),     0.0, 1.0, 200.0, 2000.0);
+        const float accentParam             = linToLin(in0(ACCENT),    0.0, 1.0,   0.0,  100.0);
+        const float volumeParam             = linToLin(in0(VOLUME),    0.0, 1.0, -60.0,    0.0);
         
         // Create interpolation slopes
         SlopeSignal<float> slopedWaveform   = makeSlope(waveformParam,  m_waveform);
@@ -92,54 +82,27 @@ namespace Open303 {
         // Note-Handling //
         ///////////////////
 
-        // Process note on/off messages
-        // Use Shruthi-1 note-stack
-        if(noteevent == 1 && lastnoteevent == 0) {
-        //if(noteevent == 1) {
-            // Check note velocity to determine if this is a note-on or note-off event
-            if(notevel > 0) {
-                // NOTE-ON             
-                // Check note-stack size. If 0, play note
-                if(noteStack.size() == 0) {
-                    // No note in stack, we can play the incoming note
-                    o303.triggerNote(notenum, accent);
-                    //cout << "PLUGIN TRIGGER NOTE " << notenum << "\n";
-                } else {
-                    // There's at least one note in the stack (a note is already playing). We need to slide to the incoming note
-                    o303.slideToNote(notenum, accent);
-                    //cout << "PLUGIN SLIDETO NOTE " << notenum << "\n";
-                }
-                // add note to note-stack
-                noteStack.NoteOn(notenum, notevel);      
-            } else {
-                // NOTE-OFF (note-on event with velocity 0)
-                // Remove note from stack
-                noteStack.NoteOff(notenum);
-                // Check new note-stack size. If 0, release note
-                if(noteStack.size() == 0) {
-                    // No notes currently playing, we can release the current note
-                    o303.releaseNote(notenum);
-                    //cout << "PLUGIN RELEASE NOTE " << notenum << "\n";
-                } else {
-                    // Slide to the most recent note remaining in the stack
-                    o303.slideToNote(noteStack.most_recent_note().note, false);
-                    //cout << "PLUGIN SLIDETO NOTE " << notenum << "\n";
-                }
-            }
+        // New gate
+        if(gate && !lastgate) {
+            //cout << "PLUGIN NOTEON " << notenum << "\n";
+            o303.triggerNote(notenum, accent);
         }
-        // Update previous note-event
-        lastnoteevent = noteevent;
-
+        // Gate still high but note changed. Slide to new note
+        if((notenum != lastnotenum) && (gate && lastgate)) {
+            //cout << "PLUGIN SLIDETO " << notenum << "\n";
+            o303.slideToNote(notenum, accent);
+        }
+        // Last note off
+        if(lastgate && !gate) {
+            //cout << "PLUGIN LAST NOTE OFF " << notenum << "\n";
+            o303.releaseNote(notenum);
+        }
         // Detect all-notes-off trigger
         if(notealloff == 1 && lastnotealloff == 0) {
             // Trigger synth all-notes-off
+            //cout << "PLUGIN ALL NOTES OFF\n"
             o303.allNotesOff();
-            // Clear note-stack
-            noteStack.Clear();
-            //cout << "PLUGIN ALL NOTES OFF\n";
         }
-        // Update previous all-note-off
-        lastnotealloff = notealloff;
 
         //////////////////
         // Audio Render //
@@ -168,13 +131,21 @@ namespace Open303 {
         // Update Param State //
         ////////////////////////
 
-        m_waveform  = slopedWaveform.value;
-        m_cutoff    = slopedCutoff.value;
-        m_resonance = slopedResonance.value;
-        m_envmod    = slopedEnvmod.value;
-        m_decay     = slopedDecay.value;
-        m_accent    = slopedAccent.value;
-        m_volume    = slopedVolume.value;
+        m_waveform      = slopedWaveform.value;
+        m_cutoff        = slopedCutoff.value;
+        m_resonance     = slopedResonance.value;
+        m_envmod        = slopedEnvmod.value;
+        m_decay         = slopedDecay.value;
+        m_accent        = slopedAccent.value;
+        m_volume        = slopedVolume.value;
+
+        ///////////////////////////////
+        // Update Previous Gate/Note //
+        ///////////////////////////////
+
+        lastgate        = gate;
+        lastnotenum     = notenum;
+        lastnotealloff  = notealloff;
     
     } // End Open303::next()
 

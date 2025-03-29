@@ -24,10 +24,11 @@ private:
     // State Variables //
     /////////////////////
 
-    double srate {};
-    int lastnoteevent {0};
-    int lastnotealloff {0};
-    int accentthreshold = 100;
+    double srate                {};
+    bool lastgate               {false};
+    int lastnotenum             {60};
+    int lastnotealloff          {0};
+    const int accentthreshold   {100};
 
     // Param state (initialised in constructor)
     float m_waveform;
@@ -38,7 +39,7 @@ private:
     float m_accent;
     float m_volume;
 
-    enum inputs { NOTEEVENT = 0, NOTENUM, NOTEVEL, NOTEALLOFF, WAVEFORM, CUTOFF, RESONANCE, ENVMOD, DECAY, ACCENT, VOLUME };
+    enum inputs { GATE, NOTENUM, NOTEVEL, NOTEALLOFF, WAVEFORM, CUTOFF, RESONANCE, ENVMOD, DECAY, ACCENT, VOLUME };
 
     // Calc function
     void next(int nSamples);

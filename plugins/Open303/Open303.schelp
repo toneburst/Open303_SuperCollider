@@ -12,8 +12,8 @@ Intended for use as a Norns script Engine. Currently unreliable for general use 
 classmethods::
 
 method:: ar
-argument:: notetrigger
-Trigger a note on or off event. Must be a single k-rate pulse with a value of 1.0. See example code below showing how to implement this.
+argument:: gate
+Trigger a note on event. Gates and note-numbers must be managed in SCLang in a "mono-legato" setup as Open303 builtin note-handling will not work reliably. See example script below
 argument:: notenum
 MIDI note number of note-on/off event 0-127.
 argument:: notevel
@@ -46,6 +46,7 @@ code::
 s.waitForBoot {
 	SynthDef.new("AcidBass", {
 		arg out,
+		gate = 0.0,
 		notenum = 60.0,
 		notevel = 64.0,
 		waveform = 0.85,
@@ -57,11 +58,10 @@ s.waitForBoot {
 		volume = 0.9;
 
 		// Declare vars
-		var notetrigger = NamedControl.tr(\notetrigger); // Ensures 'noteevent' is only ever positive for 1 k-rate cycle!
 		var notealloff = NamedControl.tr(\notealloff);
 		// Create output
 		var result;
-		result = Open303.ar(notetrigger, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume);
+		result = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume);
 		// Output output
 		Out.ar(out, result);
 	}).add;
@@ -70,9 +70,10 @@ s.waitForBoot {
 
 ( // Start it
 
+// Create note-stack list
+~notestack = List[ ];
 // Create bassline synth object
 ~bassline = Synth(\AcidBass);
-~notecount = 0;
 
 // Start MIDI
 MIDIClient.init;
@@ -80,25 +81,33 @@ MIDIIn.connectAll;
 
 // MIDI functions
 MIDIFunc.noteOn({ |vel, num|
-	"SCLANG NOTEON % \n".postf(num);
-	~bassline.set(\notenum, num, \notevel, vel, \notetrigger, 1.0);
-	// Increment note-counter
-	~notecount = ~notecount + 1;
+	// Add new note to end of note-stack
+	~notestack.add(num);
+	// If note-stack size is now 1, this is a non-legato note
+	if (~notestack.size == 1) {
+		// Switch gate high and update synth MIDI note index and velocity. Synth will play note
+		//postf("SCLANG NOTEON % STACK SIZE % STACK % \n", num, ~notestack.size, ~notestack);
+		~bassline.set(\gate, 1.0, \notenum, num, \notevel, vel);
+	} {
+		// ...else this is a legato note
+		// Hold gate high and update synth note number and velocity. Synth will slide to new note
+		//postf("SCLANG SLIDETO % STACK SIZE % STACK % \n", num, ~notestack.size, ~notestack);
+		~bassline.set(\gate, 1.0, \notenum, num, \notevel, vel);
+	}
 });
 
 MIDIFunc.noteOff({ |vel, num|
-	"SCLANG NOTEOFF %\n".postf(num);
-	// Decrement note-counter
-	~notecount = ~notecount -1;
-	// Check if all notes should be off at this point
-	if(~notecount == 0) {
-		// If yes send all-note-off signal to synth to un-stick any stuck notes
-		"SCLANG ALL NOTES OFF %\n".postf();
-		~bassline.set(\notealloff, 1.0);
+	// Seach for note index in note-stack and remove
+	~notestack.do({ arg item, i; if (item == num) { ~notestack.removeAt(i); }});
+	// Check if this we've just released the last held note
+	if (~notestack.size == 0) {
+		// ...we have. Pull gate low and send note index to synth (velocity not required). Synth will release note
+		//postf("SCLANG LAST NOTE OFF % STACK SIZE % STACK % \n", num, ~notestack.size, ~notestack);
+		~bassline.set(\gate, 0.0, \notenum, num);
 	} {
-		// At least one note is still being held, so we send note off for this note
-		"SCLANG NOTEOFF % \n".postf(num);
-		~bassline.set(\notenum, num, \notevel, 0.0, \notetrigger, 1.0);
+		// Update synth with newest note index remaining in note-stack. Synth will slide back to note
+		//postf("SCLANG SLIDETO % STACK SIZE % STACK % \n", ~notestack.last, ~notestack.size, ~notestack);
+		~bassline.set(\gate, 1.0, \notenum, ~notestack.last);
 	}
 });
 
