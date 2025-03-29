@@ -34,6 +34,25 @@ argument:: accent
 Accent level. 0-1 range.
 argument:: volume
 Output volume. 0-1 range. 
+argument:: filtermode
+Switch between 15 filter modes. The Open303 filter model exposed this option, so I thought I may as well implement a control for it! 0-1 range.
+Available filter types are:
+1. TB_303
+1. BP_6_6 
+1. BP_12_6
+1. BP_6_12
+1. BP_18_6
+1. BP_6_18
+1. BP_12_12
+1. HP_24
+1. HP_18
+1. HP_12
+1. HP_6
+1. LP_24
+1. LP_18
+1. LP_12
+1. LP_6
+1. FLAT
 
 examples::
 

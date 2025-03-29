@@ -58,7 +58,7 @@ namespace Open303 {
 
         // Other non-interpolated synth control parameters
         const int filterMode                = normalizedValueToIndex(in0(FILTERMODE), 15);
-        o303.setFilterMode(filterMode);
+        o303.setFilterMode(15 - filterMode); // Reverse so that standard 303 filter is first in list
 
         // Interpolated parameters. Synth expects doubles, inputs are floats.
         // Conversion functions from Open303 Globalfunctions.h

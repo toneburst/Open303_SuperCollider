@@ -55,26 +55,6 @@ private:
         FILTERMODE
     };
 
-    // Enumeration of the available filter modes
-    enum filtermodes {
-        FLAT = 0,
-        LP_6,
-        LP_12,
-        LP_18,
-        LP_24,
-        HP_6,
-        HP_12,
-        HP_18,
-        HP_24,
-        BP_12_12,
-        BP_6_18,
-        BP_18_6,
-        BP_6_12,
-        BP_12_6,
-        BP_6_6,
-        TB_303
-    };
-
     // Calc function
     void next(int nSamples);
 
