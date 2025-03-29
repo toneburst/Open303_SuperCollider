@@ -48,10 +48,9 @@ git config --global user.name yournewgoodname
 
 ## Add note-handling from Shruthi-1?
 
-Replace builtin Open303 note-handling with a more monosynth-like behaviour
+Implement Open303 extended controls.
 
-Note-stack
-https://github.com/pichenettes/shruthi-1/blob/master/shruthi/note_stack.h
+Compile for Norns RPi
 
-Shows implementation?
-https://github.com/pichenettes/shruthi-1/blob/master/shruthi/part.h
+Create updated Norns engine class
+Add overdrive/distortion

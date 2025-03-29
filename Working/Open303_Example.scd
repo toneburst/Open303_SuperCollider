@@ -11,13 +11,14 @@ s.waitForBoot {
 		envmod = 0.25,
 		decay = 0.5,
 		accent = 0.5,
-		volume = 0.9;
+		volume = 0.9,
+		filtermode = 1.0;
 
 		// Declare vars
 		var notealloff = NamedControl.tr(\notealloff);
 		// Create output
 		var result;
-		result = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume);
+		result = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermode);
 		// Output output
 		Out.ar(out, result);
 	}).add;
@@ -54,6 +55,7 @@ MIDIFunc.noteOn({ |vel, num|
 MIDIFunc.noteOff({ |vel, num|
 	// Seach for note index in note-stack and remove
 	~notestack.do({ arg item, i; if (item == num) { ~notestack.removeAt(i); }});
+	// note-stack could sorted at this point to add lowest/highest-note priority legato release response
 	// Check if this we've just released the last held note
 	if (~notestack.size == 0) {
 		// ...we have. Pull gate low and send note index to synth (velocity not required). Synth will release note
@@ -93,6 +95,10 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 MIDIFunc.cc({ |val, ccNum, chan, src|
 	~bassline.set(\volume, val / 127);
 }, ccNum:27);
+
+MIDIFunc.cc({ |val, ccNum, chan, src|
+	~bassline.set(\filtermode, val / 127);
+}, ccNum:28);
 
 )
 

@@ -56,8 +56,12 @@ namespace Open303 {
         const int  notealloff               = static_cast<int>(in0(NOTEALLOFF));    
         const bool accent                   = (notevel >= accentthreshold);
 
-        // Interpolated synth control parameters. Synth expects doubles, inputs are floats.
-        // Conversion functions from Globalfunctions.h
+        // Other non-interpolated synth control parameters
+        const int filterMode                = normalizedValueToIndex(in0(FILTERMODE), 15);
+        o303.setFilterMode(filterMode);
+
+        // Interpolated parameters. Synth expects doubles, inputs are floats.
+        // Conversion functions from Open303 Globalfunctions.h
         // Conversion function args: <function>(in, inMin, inMax, outMin, outMax);
         // Param conversion values copied from Open303VST.cpp
         // All params 0.0 - 1.0 range
@@ -95,7 +99,8 @@ namespace Open303 {
         // Last note off
         if(lastgate && !gate) {
             //cout << "PLUGIN LAST NOTE OFF " << notenum << "\n";
-            o303.releaseNote(notenum);
+            //o303.releaseNote(notenum);
+            o303.allNotesOff();
         }
         // Detect all-notes-off trigger
         if(notealloff == 1 && lastnotealloff == 0) {

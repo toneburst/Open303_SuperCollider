@@ -23,6 +23,7 @@ Open303::Open303()
   normalAmpRelease =     0.0;
   accentAmpRelease =    50.0;
   accentGain       =     0.0;
+  filterMode       =      15;
   pitchWheelFactor =     1.0;
   currentNote      =      -1;
   currentVel       =       0;
@@ -132,6 +133,12 @@ void Open303::setSlideTime(double newSlideTime)
     pitchSlewLimiter.setTimeConstant((float)(0.2*slideTime));  // \todo: tweak the scaling constant
   }
 }
+
+void Open303::setFilterMode(int newFilterMode)
+{
+  filterMode = newFilterMode;
+  filter.setMode(filterMode);
+};
 
 void Open303::setPitchBend(double newPitchBend)
 {

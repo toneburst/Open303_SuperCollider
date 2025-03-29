@@ -139,6 +139,9 @@ namespace rosic
       ampEnv.setRelease(newAmpRelease); 
     }
 
+    /**Sets filter mode.  */
+    void setFilterMode(int newFilterMode);
+
     //-----------------------------------------------------------------------------------------------
     // inquiry:
 
@@ -312,6 +315,7 @@ namespace rosic
     double normalAmpRelease; // amp-env release time for non-accented notes
     double accentAmpRelease; // amp-env release time for accented notes
     double accentGain;       // between 0.0...1.0 - to scale the 3rd amp-envelope on accents
+    int    filterMode;       // filter mode
     double pitchWheelFactor; // scale factor for oscillator frequency from pitch-wheel
     double n1, n2;           // normalizers for the RCs that are driven by the MEG
     int    currentNote;      // note which is currently played (-1 if none)
