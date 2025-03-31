@@ -50,6 +50,16 @@ git config --global user.name yournewgoodname
 
 Implement Open303 extended controls.
 
+Add Low-Band-High-pass filter fade control (remove filter-select parameter)
+
+Add sub-oscillator (squarewave at -1 octave?)
+
+Add filter cutoff moduluation from oscillator?
+
+Add noise
+
+Add ChowDSP distortion
+
 Compile for Norns RPi
 
 Create updated Norns engine class

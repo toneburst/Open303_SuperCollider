@@ -139,7 +139,7 @@ namespace rosic
       ampEnv.setRelease(newAmpRelease); 
     }
 
-    /**Sets filter mode.  */
+    /** Sets filter mode.  */
     void setFilterMode(int newFilterMode);
 
     //-----------------------------------------------------------------------------------------------
