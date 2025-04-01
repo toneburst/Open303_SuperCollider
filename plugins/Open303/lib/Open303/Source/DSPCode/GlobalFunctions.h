@@ -329,8 +329,7 @@ INLINE double linToLin(double in, double inMin, double inMax, double outMin, dou
 
 INLINE double clamp(double in, double inMin, double inMax)
 {
-  double tmp = in;
-  return (tmp < inMin) ? inMin : (tmp > inMax) ? inMax : tmp;
+  return fmin(inMax, fmax(in, inMin));
 }
 
 INLINE double linToExp(double in, double inMin, double inMax, double outMin, double outMax)
@@ -374,7 +373,7 @@ INLINE double expToLinWithOffset(double in, double inMin, double inMax, double o
 
 INLINE double linearBlend(double inA, double inB, double position)
 {
-  double tmp = clamp(position, 0.0, 0.9);
+  double tmp = clamp(position, 0.001, 0.999);//fmin(0.001, fmax(position, 0.999));
   return ((1.0 - tmp) * inA) + (tmp * inB);
 }
 

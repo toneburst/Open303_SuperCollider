@@ -41,10 +41,10 @@ void TeeBeeFilterMorph::setFilterMorph(double newMorphPosition)
   // filter1 stays in band-pass mode. This way, filter 1 only switches mode when it's silent (avoiding clicks).
   if(morphPosition <= 0.5) {
     filter0.setMode(TB_303);  // 303 mode
-    filter1.setMode(BP_12_6); // bandpass mode
+    filter1.setMode(BP_12_12); // bandpass mode
   } else {
     filter0.setMode(HP_12);   // high-pass mode
-    filter1.setMode(BP_12_6); // bandpass mode
+    filter1.setMode(BP_12_12); // bandpass mode
   }
 }
 

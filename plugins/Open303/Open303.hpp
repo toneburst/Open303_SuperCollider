@@ -41,6 +41,7 @@ private:
   float m_accent;
   float m_volume;
   float m_filtermorph;
+  float m_distortion;
 
   // Input inded enumeration
   enum inputs {
@@ -55,7 +56,8 @@ private:
     DECAY,
     ACCENT,
     VOLUME,
-    FILTERMORPH
+    FILTERMORPH,
+    DISTORTION
   };
 
   // Calc function

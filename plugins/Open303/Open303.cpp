@@ -62,13 +62,13 @@ namespace Open303 {
         // Param conversion values copied from Open303VST.cpp
         // All params 0.0 - 1.0 range
         const float waveformParam            = in0(WAVEFORM);    // No scaling required (already in 0-1 range)
-        const float cutoffParam              = linToExp(in0(CUTOFF),    0.0, 1.0, 314.0, 2394.0);        
-        const float resonanceParam           = linToLin(in0(RESONANCE), 0.0, 1.0,   0.0,  100.0);
-        const float envmodParam              = linToLin(in0(ENVMOD),    0.0, 1.0,   0.0,  100.0);
-        const float decayParam               = linToExp(in0(DECAY),     0.0, 1.0, 200.0, 2000.0);
-        const float accentParam              = linToLin(in0(ACCENT),    0.0, 1.0,   0.0,  100.0);
-        const float volumeParam              = linToLin(in0(VOLUME),    0.0, 1.0, -60.0,    0.0);
-        const float filterMorphParam         = in0(FILTERMORPH);
+        const float cutoffParam              = linToExp(in0(CUTOFF),      0.0, 1.0, 314.0,  2394.0);        
+        const float resonanceParam           = linToLin(in0(RESONANCE),   0.0, 1.0,   0.0,   100.0);
+        const float envmodParam              = linToLin(in0(ENVMOD),      0.0, 1.0,   0.0,   100.0);
+        const float decayParam               = linToExp(in0(DECAY),       0.0, 1.0, 200.0,  2000.0);
+        const float accentParam              = linToLin(in0(ACCENT),      0.0, 1.0,   0.0,   100.0);
+        const float volumeParam              = linToLin(in0(VOLUME),      0.0, 1.0, -60.0,     0.0);
+        const float filterMorphParam         = linToLin(in0(FILTERMORPH), 0.0, 1.0,   0.0, 0.99999);
         
         // Create interpolation slopes
         SlopeSignal<float> slopedWaveform    = makeSlope(waveformParam,    m_waveform);

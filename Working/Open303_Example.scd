@@ -101,6 +101,7 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
 	~bassline.set(\filtermorph, val / 127);
+	postf("SCLANG FILTER MORPH: % \n", val/127);
 }, ccNum:28);
 
 )
