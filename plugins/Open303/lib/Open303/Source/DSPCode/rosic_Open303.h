@@ -4,7 +4,7 @@
 #include "rosic_MidiNoteEvent.h"
 #include "rosic_BlendOscillator.h"
 #include "rosic_BiquadFilter.h"
-#include "rosic_TeeBeeFilter.h"
+#include "rosic_TeeBeeFilterMorph.h"
 #include "rosic_AnalogEnvelope.h"
 #include "rosic_DecayEnvelope.h"
 #include "rosic_LeakyIntegrator.h"
@@ -56,6 +56,9 @@ namespace rosic
 
     /** Sets the resonance amount for the filter. */
     void setResonance(double newResonance) { filter.setResonance(newResonance); }
+
+    /** Filter morph (low/band/high-pass) */
+    void setFilterMorph(double newFilterMorphPosition) { filter.setFilterMorph(newFilterMorphPosition); }
 
     /** Sets the modulation depth of the filter's cutoff frequency by the filter-envelope generator 
     (in percent). */
@@ -140,7 +143,7 @@ namespace rosic
     }
 
     /** Sets filter mode.  */
-    void setFilterMode(int newFilterMode);
+    //void setFilterMode(int newFilterMode);
 
     //-----------------------------------------------------------------------------------------------
     // inquiry:
@@ -236,7 +239,6 @@ namespace rosic
     /** Sets the pitchbend value in semitones. */ 
     void setPitchBend(double newPitchBend);
 
-    // Moved to public
      /* Triggers a note (called either directly in noteOn or in getSample when the sequencer is 
     used). */
     void triggerNote(int noteNumber, bool hasAccent);
@@ -254,7 +256,7 @@ namespace rosic
 
     MipMappedWaveTable        waveTable1, waveTable2;
     BlendOscillator           oscillator;
-    TeeBeeFilter              filter;
+    TeeBeeFilterMorph         filter;
     AnalogEnvelope            ampEnv; 
     DecayEnvelope             mainEnv;
     LeakyIntegrator           pitchSlewLimiter;
@@ -267,18 +269,6 @@ namespace rosic
     //AcidSequencer             sequencer;  // Disable sequencer
 
   protected:
-
-    // /* Triggers a note (called either directly in noteOn or in getSample when the sequencer is 
-    // used). */
-    // void triggerNote(int noteNumber, bool hasAccent);
-
-    // /** Slides to a note (called either directly in noteOn or in getSample when the sequencer is 
-    // used). */
-    // void slideToNote(int noteNumber, bool hasAccent);
-
-    // /** Releases a note (called either directly in noteOn or in getSample when the sequencer is 
-    // used). */
-    // void releaseNote(int noteNumber);
 
     /** Sets the decay-time of the main envelope and updates the normalizers n1, n2 accordingly. */
     void setMainEnvDecay(double newDecay);
@@ -338,41 +328,6 @@ namespace rosic
     //  return 0.0;
     if( idle )
       return 0.0;
-
-    // check the sequencer if we have some note to trigger:
-    /*if( sequencer.getSequencerMode() != AcidSequencer::OFF )
-    {
-      noteOffCountDown--;
-      if( noteOffCountDown == 0 || sequencer.isRunning() == false )
-        releaseNote(currentNote);
-
-      AcidNote *note = sequencer.getNote();
-      if( note != NULL )
-      {
-        if( note->gate == true && currentNote != -1)
-        {
-          int key = note->key + 12*note->octave + currentNote;
-          key = clip(key, 0, 127);
-
-          if( !slideToNextNote )
-            triggerNote(key, note->accent);
-          else
-            slideToNote(key, note->accent);
-
-          AcidNote* nextNote = sequencer.getNextScheduledNote();
-          if( note->slide && nextNote->gate == true )
-          {
-            noteOffCountDown = INT_MAX;
-            slideToNextNote  = true;
-          }
-          else
-          {
-            noteOffCountDown = sequencer.getStepLengthInSamples();
-            slideToNextNote  = false;
-          }
-        }
-      }
-    }*/
 
     // calculate instantaneous oscillator frequency and set up the oscillator:
     double instFreq = pitchSlewLimiter.getSample(oscFreq);

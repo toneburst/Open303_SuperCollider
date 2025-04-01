@@ -50,37 +50,35 @@ namespace Open303 {
         // "in0" is the first value in the block (although all other values are probably the same))
 
         // Most-recent note parameters. Synth expects ints
-        const bool gate                     = static_cast<bool>(in0(GATE));
-        const int  noteNum                  = static_cast<int>(in0(NOTENUM));
-        const int  noteVel                  = static_cast<int>(in0(NOTEVEL));
-        const bool noteAllOff               = static_cast<bool>(in0(NOTEALLOFF));    
-        const bool accent                   = (noteVel >= accentThreshold);
-
-        // Other non-interpolated synth control parameters
-        const int filterMode                = normalizedValueToIndex(in0(FILTERMODE), 15);
-        o303.setFilterMode(15 - filterMode); // Reverse so that standard 303 filter is first in list
+        const bool gate                      = static_cast<bool>(in0(GATE));
+        const int  noteNum                   = static_cast<int>(in0(NOTENUM));
+        const int  noteVel                   = static_cast<int>(in0(NOTEVEL));
+        const bool noteAllOff                = static_cast<bool>(in0(NOTEALLOFF));    
+        const bool accent                    = (noteVel >= accentThreshold);
 
         // Interpolated parameters. Synth expects doubles, inputs are floats.
         // Conversion functions from Open303 Globalfunctions.h
         // Conversion function args: <function>(in, inMin, inMax, outMin, outMax);
         // Param conversion values copied from Open303VST.cpp
         // All params 0.0 - 1.0 range
-        const float waveformParam           = in0(WAVEFORM);    // No scaling required (already in 0-1 range)
-        const float cutoffParam             = linToExp(in0(CUTOFF),    0.0, 1.0, 314.0, 2394.0);        
-        const float resonanceParam          = linToLin(in0(RESONANCE), 0.0, 1.0,   0.0,  100.0);
-        const float envmodParam             = linToLin(in0(ENVMOD),    0.0, 1.0,   0.0,  100.0);
-        const float decayParam              = linToExp(in0(DECAY),     0.0, 1.0, 200.0, 2000.0);
-        const float accentParam             = linToLin(in0(ACCENT),    0.0, 1.0,   0.0,  100.0);
-        const float volumeParam             = linToLin(in0(VOLUME),    0.0, 1.0, -60.0,    0.0);
+        const float waveformParam            = in0(WAVEFORM);    // No scaling required (already in 0-1 range)
+        const float cutoffParam              = linToExp(in0(CUTOFF),    0.0, 1.0, 314.0, 2394.0);        
+        const float resonanceParam           = linToLin(in0(RESONANCE), 0.0, 1.0,   0.0,  100.0);
+        const float envmodParam              = linToLin(in0(ENVMOD),    0.0, 1.0,   0.0,  100.0);
+        const float decayParam               = linToExp(in0(DECAY),     0.0, 1.0, 200.0, 2000.0);
+        const float accentParam              = linToLin(in0(ACCENT),    0.0, 1.0,   0.0,  100.0);
+        const float volumeParam              = linToLin(in0(VOLUME),    0.0, 1.0, -60.0,    0.0);
+        const float filterMorphParam         = in0(FILTERMORPH);
         
         // Create interpolation slopes
-        SlopeSignal<float> slopedWaveform   = makeSlope(waveformParam,  m_waveform);
-        SlopeSignal<float> slopedCutoff     = makeSlope(cutoffParam,    m_cutoff);
-        SlopeSignal<float> slopedResonance  = makeSlope(resonanceParam, m_resonance);
-        SlopeSignal<float> slopedEnvmod     = makeSlope(envmodParam,    m_envmod);
-        SlopeSignal<float> slopedDecay      = makeSlope(decayParam,     m_decay);
-        SlopeSignal<float> slopedAccent     = makeSlope(accentParam,    m_accent);
-        SlopeSignal<float> slopedVolume     = makeSlope(volumeParam,    m_volume);
+        SlopeSignal<float> slopedWaveform    = makeSlope(waveformParam,    m_waveform);
+        SlopeSignal<float> slopedCutoff      = makeSlope(cutoffParam,      m_cutoff);
+        SlopeSignal<float> slopedResonance   = makeSlope(resonanceParam,   m_resonance);
+        SlopeSignal<float> slopedEnvmod      = makeSlope(envmodParam,      m_envmod);
+        SlopeSignal<float> slopedDecay       = makeSlope(decayParam,       m_decay);
+        SlopeSignal<float> slopedAccent      = makeSlope(accentParam,      m_accent);
+        SlopeSignal<float> slopedVolume      = makeSlope(volumeParam,      m_volume);
+        SlopeSignal<float> slopedFilterMorph = makeSlope(filterMorphParam, m_filtermorph);
 
         ///////////////////
         // Note-Handling //
@@ -120,13 +118,14 @@ namespace Open303 {
         for (int i = 0; i < nSamples; ++i) {
             // Update synth params with interpolated value
             // Cast floats to doubles
-            o303.setWaveform(   static_cast<double>(slopedWaveform.consume()));
-            o303.setCutoff(     static_cast<double>(slopedCutoff.consume()));
-            o303.setResonance(  static_cast<double>(slopedResonance.consume()));
-            o303.setEnvMod(     static_cast<double>(slopedEnvmod.consume()));
-            o303.setDecay(      static_cast<double>(slopedDecay.consume()));
-            o303.setAccent(     static_cast<double>(slopedAccent.consume()));
-            o303.setVolume(     static_cast<double>(slopedVolume.consume()));
+            o303.setWaveform(    static_cast<double>(slopedWaveform.consume()));
+            o303.setCutoff(      static_cast<double>(slopedCutoff.consume()));
+            o303.setResonance(   static_cast<double>(slopedResonance.consume()));
+            o303.setEnvMod(      static_cast<double>(slopedEnvmod.consume()));
+            o303.setDecay(       static_cast<double>(slopedDecay.consume()));
+            o303.setAccent(      static_cast<double>(slopedAccent.consume()));
+            o303.setVolume(      static_cast<double>(slopedVolume.consume()));
+            o303.setFilterMorph( static_cast<double>(slopedFilterMorph.consume()));
 
             // Call Open303 render function
             outbuf[i] = o303.getSample();
@@ -143,6 +142,7 @@ namespace Open303 {
         m_decay         = slopedDecay.value;
         m_accent        = slopedAccent.value;
         m_volume        = slopedVolume.value;
+        m_filtermorph   = slopedFilterMorph.value;
 
         ///////////////////////////////
         // Update Previous Gate/Note //

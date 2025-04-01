@@ -3,23 +3,23 @@
 s.waitForBoot {
 	SynthDef.new("AcidBass", {
 		arg out,
-		gate       = 0.0,
-		notenum    = 60.0,
-		notevel    = 64.0,
-		waveform   = 0.85,
-		cutoff     = 0.229,
-		resonance  = 0.5,
-		envmod     = 0.25,
-		decay      = 0.5,
-		accent     = 0.5,
-		volume     = 0.9,
-		filtermode = 0.0;
+		gate        = 0.0,
+		notenum     = 60.0,
+		notevel     = 64.0,
+		waveform    = 0.85,
+		cutoff      = 0.229,
+		resonance   = 0.5,
+		envmod      = 0.25,
+		decay       = 0.5,
+		accent      = 0.5,
+		volume      = 0.9,
+		filtermorph = 0.0;
 
 		// Declare vars
 		var notealloff = NamedControl.tr(\notealloff);
 		// Create output
 		var result;
-		result = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermode);
+		result = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermorph);
 		// Output output
 		Out.ar(out, result);
 	}).add;
@@ -100,7 +100,7 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:27);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\filtermode, val / 127);
+	~bassline.set(\filtermorph, val / 127);
 }, ccNum:28);
 
 )

@@ -4,7 +4,7 @@
 // standard-library includes:
 #include <stdlib.h>          // for the NULL macro
 
-// rosic-indcludes:
+// rosic-includes:
 #include "rosic_OnePoleFilter.h"
 
 namespace rosic
@@ -139,6 +139,7 @@ namespace rosic
     double sampleRate;          // the sample rate in Hz
     double twoPiOverSampleRate; // 2*PI/sampleRate
     int    mode;                // the selected filter-mode
+    int    oldMode;             // previous filter-mode
 
     OnePoleFilter feedbackHighpass;
 

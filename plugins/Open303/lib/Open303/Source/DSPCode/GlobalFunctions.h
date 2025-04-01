@@ -109,6 +109,8 @@ INLINE double expToLin(double in, double inMin, double inMax, double outMin, dou
 INLINE double expToLinWithOffset(double in, double inMin, double inMax, double outMin,
                                  double outMax, double offset = 0.0);
 
+INLINE double linearBlend(double a, double b, double position);
+
 /** Returns a power of two which is greater than or equal to the input argument. */
 template <class T>
 INLINE T nextPowerOfTwo(T x);
@@ -359,6 +361,11 @@ INLINE double expToLinWithOffset(double in, double inMin, double inMax, double o
   tmp *= outMax/(outMax+offset);
   return tmp;
   */
+}
+
+INLINE double linearBlend(double inA, double inB, double position)
+{
+  return ((1.0 - position) * inA) + (position * inB);
 }
 
 template <class T>

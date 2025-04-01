@@ -134,11 +134,11 @@ void Open303::setSlideTime(double newSlideTime)
   }
 }
 
-void Open303::setFilterMode(int newFilterMode)
-{
-  filterMode = newFilterMode;
-  filter.setMode(filterMode);
-};
+// void Open303::setFilterMode(int newFilterMode)
+// {
+//   filterMode = newFilterMode;
+//   filter.setMode(filterMode);
+// };
 
 void Open303::setPitchBend(double newPitchBend)
 {
