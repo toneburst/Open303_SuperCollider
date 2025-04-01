@@ -69,6 +69,7 @@ namespace Open303 {
         const float accentParam              = linToLin(in0(ACCENT),      0.0, 1.0,   0.0,   100.0);
         const float volumeParam              = linToLin(in0(VOLUME),      0.0, 1.0, -60.0,     0.0);
         const float filterMorphParam         = linToLin(in0(FILTERMORPH), 0.0, 1.0,   0.0, 0.99999);
+        const float filterDriveParam         = linToLin(in0(FILTERDRIVE), 0.0, 1.0,   0.0,    60.0);
         
         // Create interpolation slopes
         SlopeSignal<float> slopedWaveform    = makeSlope(waveformParam,    m_waveform);
@@ -79,6 +80,7 @@ namespace Open303 {
         SlopeSignal<float> slopedAccent      = makeSlope(accentParam,      m_accent);
         SlopeSignal<float> slopedVolume      = makeSlope(volumeParam,      m_volume);
         SlopeSignal<float> slopedFilterMorph = makeSlope(filterMorphParam, m_filtermorph);
+        SlopeSignal<float> slopedFilterDrive = makeSlope(filterDriveParam, m_filterdrive);
 
         ///////////////////
         // Note-Handling //
@@ -126,6 +128,7 @@ namespace Open303 {
             o303.setAccent(      static_cast<double>(slopedAccent.consume()));
             o303.setVolume(      static_cast<double>(slopedVolume.consume()));
             o303.setFilterMorph( static_cast<double>(slopedFilterMorph.consume()));
+            o303.setFilterDrive( static_cast<double>(slopedFilterDrive.consume()));
 
             // Call Open303 render function
             outbuf[i] = o303.getSample();
@@ -143,6 +146,7 @@ namespace Open303 {
         m_accent        = slopedAccent.value;
         m_volume        = slopedVolume.value;
         m_filtermorph   = slopedFilterMorph.value;
+        m_filterdrive   = slopedFilterDrive.value;
 
         ///////////////////////////////
         // Update Previous Gate/Note //

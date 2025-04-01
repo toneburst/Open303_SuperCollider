@@ -36,6 +36,10 @@ argument:: volume
 Output volume. 0-1 range. 
 argument:: filtermorph
 Morph filter from low-pass (standard 303) to band-pass to high-pass response. 0-1 range.
+argument:: filterdrive
+Filter overdrive. 0-1 range.
+argument:: distortion
+Distortion amount (not yet implemented). 0-1 range.
 
 examples::
 
@@ -45,30 +49,33 @@ code::
 // Change CC numbers as necessary
 
 ( // SynthDef
+
 s.waitForBoot {
 	SynthDef.new("AcidBass", {
 		arg out,
-		gate = 0.0,
-		notenum = 60.0,
-		notevel = 64.0,
-		waveform = 0.85,
-		cutoff = 0.229,
-		resonance = 0.5,
-		envmod = 0.25,
-		decay = 0.5,
-		accent = 0.5,
-		volume = 0.9
-		filtermode = 1.0;
+		gate        = 0.0,
+		notenum     = 60.0,
+		notevel     = 64.0,
+		waveform    = 0.85,
+		cutoff      = 0.229,
+		resonance   = 0.5,
+		envmod      = 0.25,
+		decay       = 0.5,
+		accent      = 0.5,
+		volume      = 0.9,
+		filtermorph = 0.0;
+		distortion  = 0.0;
 
 		// Declare vars
 		var notealloff = NamedControl.tr(\notealloff);
 		// Create output
 		var result;
-		result = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermode);
+		result = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermorph);
 		// Output output
 		Out.ar(out, result);
 	}).add;
 };
+
 )
 
 ( // Start it
@@ -102,13 +109,14 @@ MIDIFunc.noteOn({ |vel, num|
 MIDIFunc.noteOff({ |vel, num|
 	// Seach for note index in note-stack and remove
 	~notestack.do({ arg item, i; if (item == num) { ~notestack.removeAt(i); }});
+	// note-stack could be sorted at this point to add lowest/highest-note priority legato release response
 	// Check if this we've just released the last held note
 	if (~notestack.size == 0) {
 		// ...we have. Pull gate low and send note index to synth (velocity not required). Synth will release note
 		//postf("SCLANG LAST NOTE OFF % STACK SIZE % STACK % \n", num, ~notestack.size, ~notestack);
 		~bassline.set(\gate, 0.0, \notenum, num);
 	} {
-		// Update synth with newest note index remaining in note-stack. Synth will slide back to note
+		// Notes still held. Update synth with most recent note index remaining in note-stack. Synth will slide back to note
 		//postf("SCLANG SLIDETO % STACK SIZE % STACK % \n", ~notestack.last, ~notestack.size, ~notestack);
 		~bassline.set(\gate, 1.0, \notenum, ~notestack.last);
 	}
@@ -141,9 +149,10 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 MIDIFunc.cc({ |val, ccNum, chan, src|
 	~bassline.set(\volume, val / 127);
 }, ccNum:27);
+
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\filtermode, val / 127);
-}, ccNum:27);
+	~bassline.set(\filtermorph, val / 127);
+}, ccNum:28);
 
 )
 

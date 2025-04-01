@@ -41,6 +41,7 @@ private:
   float m_accent;
   float m_volume;
   float m_filtermorph;
+  float m_filterdrive;
   float m_distortion;
 
   // Input inded enumeration
@@ -57,6 +58,7 @@ private:
     ACCENT,
     VOLUME,
     FILTERMORPH,
+    FILTERDRIVE,
     DISTORTION
   };
 

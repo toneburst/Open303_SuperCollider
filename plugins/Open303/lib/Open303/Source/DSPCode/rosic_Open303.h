@@ -73,9 +73,12 @@ namespace rosic
     void setAccent(double newAccent);
 
     /** Sets the master volume level (in dB). */
-    void setVolume(double newVolume);     
+    void setVolume(double newVolume);   
 
     //  from here: parameter settings which were not available to the user in the 303:
+
+    /** Set filter overdrive */
+    void setFilterDrive(double newFilterDrive);
 
     /** Sets the amplitudes envelope's sustain level in decibels. Devil Fish uses the second half 
     of the range of the (amplitude) decay pot for this and lets the user adjust it between 0 
@@ -141,9 +144,6 @@ namespace rosic
       normalAmpRelease = newAmpRelease;
       ampEnv.setRelease(newAmpRelease); 
     }
-
-    /** Sets filter mode.  */
-    //void setFilterMode(int newFilterMode);
 
     //-----------------------------------------------------------------------------------------------
     // inquiry:
@@ -305,7 +305,8 @@ namespace rosic
     double normalAmpRelease; // amp-env release time for non-accented notes
     double accentAmpRelease; // amp-env release time for accented notes
     double accentGain;       // between 0.0...1.0 - to scale the 3rd amp-envelope on accents
-    int    filterMode;       // filter mode
+    double filterDrive;      // filter overdrive
+
     double pitchWheelFactor; // scale factor for oscillator frequency from pitch-wheel
     double n1, n2;           // normalizers for the RCs that are driven by the MEG
     int    currentNote;      // note which is currently played (-1 if none)
