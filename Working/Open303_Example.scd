@@ -15,7 +15,8 @@ s.waitForBoot {
 		volume      = 0.9,
 		filtermorph = 0.0,
 		filterdrive = 0.0,
-		dist        = 0.0;
+		dist        = 0.0,
+		pan         = 0.0;
 
 		// Declare vars
 		var notealloff = NamedControl.tr(\notealloff);
@@ -24,7 +25,7 @@ s.waitForBoot {
 		sig = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermorph, filterdrive);
 		//sig = (sig * linexp(dist, -1, 1, 1, 30)).distort * dist.linexp(-1, 1, 1, 0.15);
 		// Output output
-		Out.ar(out, sig);
+		Out.ar(out, Pan2.ar(sig, pan, 1.0));
 	}).add;
 };
 
