@@ -142,7 +142,7 @@ namespace rosic
     double fracPos, intPos, f0, f1, out;
 
     fracPos = morphPosition * 2.0;
-    fracPos = modf(pos, &intPos);
+    fracPos = modf(fracPos, &intPos);
 
     f0 = filter0.getSample(in);
     f1 = filter1.getSample(in);

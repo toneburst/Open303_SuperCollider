@@ -83,6 +83,9 @@ INLINE double log2(double x);
 /** Calculates logarithm to an arbitrary base b. */
 INLINE double logB(double x, double b);
 
+/** Clamps value between inMin and inMax */
+INLINE double clamp(double in, double inMin, double inMax);
+
 /** Converts a value between inMin and inMax into a value between outMin and outMax where the
 mapping is linear for the input and the output. Example: y = linToLin(x, 0.0, 1.0, -96.0, 24.0)
 will map the input x assumed to lie inside 0.0...1.0 to the range between -96.0...24.0. This
@@ -324,6 +327,12 @@ INLINE double linToLin(double in, double inMin, double inMax, double outMin, dou
   return tmp;
 }
 
+INLINE double clamp(double in, double inMin, double inMax)
+{
+  double tmp = in;
+  return (tmp < inMin) ? inMin : (tmp > inMax) ? inMax : tmp;
+}
+
 INLINE double linToExp(double in, double inMin, double inMax, double outMin, double outMax)
 {
   // map input to the range 0.0...1.0:
@@ -365,7 +374,8 @@ INLINE double expToLinWithOffset(double in, double inMin, double inMax, double o
 
 INLINE double linearBlend(double inA, double inB, double position)
 {
-  return ((1.0 - position) * inA) + (position * inB);
+  double tmp = clamp(position, 0.0, 0.9);
+  return ((1.0 - tmp) * inA) + (tmp * inB);
 }
 
 template <class T>

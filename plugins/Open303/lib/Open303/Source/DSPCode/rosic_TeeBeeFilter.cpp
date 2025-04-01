@@ -12,11 +12,12 @@ TeeBeeFilter::TeeBeeFilter()
   driveFactor         =     1.0;
   resonanceRaw        =     0.0;
   resonanceSkewed     =     0.0;
+  mode                =  TB_303;
+  oldMode             =    mode;
   g                   =     1.0;
   sampleRate          = 44100.0;
   twoPiOverSampleRate = 2.0*PI/sampleRate;
-  mode                = TB_303;
-  oldMode             = -1;
+
   feedbackHighpass.setMode(OnePoleFilter::HIGHPASS);
   feedbackHighpass.setCutoff(150.0);
 
