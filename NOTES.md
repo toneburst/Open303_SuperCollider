@@ -74,9 +74,12 @@ Add filter cutoff moduluation from oscillator?
 
 Add noise
 
-Add ChowDSP distortion
+Add overdrive/distortion
+Use ChowDSP's ["AnalogVintageDistortion"](https://github.com/madskjeldgaard/portedplugins/tree/main?tab=readme-ov-file#building)
+
+Bus setup to allow parallel distortion/compression
+Busses [docs](https://doc.sccode.org/Tutorials/Getting-Started/11-Busses.html)
 
 Compile for Norns RPi
 
 Create updated Norns engine class
-Add overdrive/distortion
