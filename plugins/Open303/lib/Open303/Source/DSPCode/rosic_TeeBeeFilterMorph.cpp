@@ -10,8 +10,8 @@ using namespace rosic;
 TeeBeeFilterMorph::TeeBeeFilterMorph()
 {
   morphPosition = 0.0;
-  filter0.setMode(TB_303);  // 303 mode
-  filter1.setMode(BP_12_6); // bandpass mode
+  filter0.setMode(TB_303);   // 303 mode
+  filter1.setMode(BP_12_12); // bandpass mode
 }
 
 TeeBeeFilterMorph::~TeeBeeFilterMorph()

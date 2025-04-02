@@ -145,7 +145,7 @@ namespace rosic
     fracPos = modf(fracPos, &intPos); // Integer part not used
 
     f0 = filter0.getSample(in);
-    f1 = filter1.getSample(in) * 1.5;  // Bandpass is quieter, so bump the level a little
+    f1 = filter1.getSample(in) * 2.0;  // Bandpass is quieter, so bump the level a little
     
     // Set blend mode
     if(morphPosition <= 0.5) {
