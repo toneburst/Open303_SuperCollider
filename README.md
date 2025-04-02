@@ -2,7 +2,10 @@
 
 Author: toneburst
 
-SuperCollider wrapper around Open303 DSP
+SuperCollider wrapper around [Open303](https://github.com/toneburst/Open303/tree/main) by Robin Schmidt.
+All credit for the DSP work goes to Robin. Thank you for sharing this amazing project!
+
+I've added some additional features, which are documented in the SiperCollider helpfile.
 
 ### Requirements
 

@@ -373,7 +373,7 @@ INLINE double expToLinWithOffset(double in, double inMin, double inMax, double o
 
 INLINE double linearBlend(double inA, double inB, double position)
 {
-  double tmp = clamp(position, 0.001, 0.999);//fmin(0.001, fmax(position, 0.999));
+  double tmp = clamp(position, 0.0, 0.99999);
   return ((1.0 - tmp) * inA) + (tmp * inB);
 }
 

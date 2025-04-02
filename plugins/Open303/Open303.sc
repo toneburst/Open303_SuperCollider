@@ -12,7 +12,7 @@ Open303 : UGen {
     }
 
 	checkInputs {		
-		// If you want to do custom rate checking...
+		// Input rate-checking
         [0, 1].do { |i|
             (inputs[i].rate != 'audio').if {
                 ^"input % is not audio rate".format(i).throw;
