@@ -15,15 +15,29 @@ s.waitForBoot {
 		volume      = 0.9,
 		filtermorph = 0.0,
 		filterdrive = 0.0,
-		dist        = 0.0,
+		distortion  = 0.0,
 		pan         = 0.0;
 
 		// Declare vars
 		var notealloff = NamedControl.tr(\notealloff);
 		// Create output
 		var sig;
-		sig = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermorph, filterdrive);
-		//sig = (sig * linexp(dist, -1, 1, 1, 30)).distort * dist.linexp(-1, 1, 1, 0.15);
+
+		// Synth. Requires Open303_SuperCollider extension from:
+		// https://github.com/toneburst/Open303_SuperCollider/tree/main
+		sig = Open303.ar(
+			gate, notenum, notevel, notealloff,
+			waveform, cutoff, resonance, envmod, decay, accent, volume,
+			filtermorph, filterdrive
+		);
+
+		// Apply distortion. Requires AnalogVintageDistortion extension from:
+		// https://github.com/madskjeldgaard/portedplugins/tree/main
+		sig = AnalogVintageDistortion.ar(
+			sig, drivegain: distortion, bias: 0.1, lowgain: -3.dbamp,
+			highgain: -9.dbamp, shelvingfreq: 600, oversample: 1
+		);
+
 		// Output output
 		Out.ar(out, Pan2.ar(sig, pan, 1.0));
 	}).add;
@@ -104,7 +118,7 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:27);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\filtermorph, val / 127);
+	~bassline.set(\distortion, val / 127);
 }, ccNum:28);
 
 )

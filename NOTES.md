@@ -1,8 +1,13 @@
+# SOURCES
+
+[Open303 Repo](https://github.com/toneburst/Open303/tree/main)
+[KVR thread](https://www.kvraudio.com/forum/viewtopic.php?t=262829&start=1095)
+
 # BUILD NOTES:
 
 SuperCollider source must be in same directory as plugin project.
 
-## Build Scripts:
+## Building:
 
 To create build files, run
 ```
@@ -14,6 +19,19 @@ Then run build from plugin project root
 ```
 cmake --build build --config "Release" --target install
 ```
+
+Set github username (global)
+
+```
+git config --global user.email "YOUR_EMAIL"
+```
+
+Test
+
+```
+git config --global user.email
+```
+[More info](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address#setting-your-commit-email-address-in-git)
 
 ## Symlink to SuperCollider Extensions
 
