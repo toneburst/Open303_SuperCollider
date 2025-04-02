@@ -3,9 +3,13 @@
 Author: toneburst
 
 SuperCollider wrapper around [Open303](https://github.com/toneburst/Open303/tree/main) by Robin Schmidt.
-All credit for the DSP work goes to Robin. Thank you for sharing this amazing project!
+All credit for the DSP work goes to Robin. Big thanks to you and the (KVR community)[https://www.kvraudio.com/forum/viewtopic.php?t=262829] for this amazing project!
 
-I've added some additional features, which are documented in the SiperCollider helpfile.
+I've naively hacked in some additional features and exposed some original controls that were internal-only. See SuperCollider helpfile and example SC script for details.
+
+Will eventually be used in a replacement SuperCollider audio engine for my [bline](https://github.com/toneburst/bline) parametric bassline explorer script for the Monome Norns platform.
+
+The author accepts no reponsibility for the fitness or otherwise of this SuperCollider extension for any other purpose.
 
 ### Requirements
 
