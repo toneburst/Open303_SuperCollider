@@ -21,8 +21,7 @@ TeeBeeFilter::TeeBeeFilter()
   feedbackHighpass.setMode(OnePoleFilter::HIGHPASS);
   feedbackHighpass.setCutoff(150.0);
 
-  //setMode(LP_18);
-  setMode(TB_303);
+  setMode(mode);
   calculateCoefficientsExact();
   reset();
 }
@@ -52,7 +51,7 @@ void TeeBeeFilter::setDrive(double newDrive)
 
 void TeeBeeFilter::setMode(int newMode)
 {
-  if( (newMode >= 0) && (newMode < NUM_MODES) && (mode != oldMode))
+  if( (newMode >= 0) && (newMode < NUM_MODES) && (newMode != oldMode))
   {
     mode = newMode;
     switch(mode)
