@@ -48,7 +48,7 @@ s.waitForBoot {
 ( // Start it
 
 // Create note-stack list
-~notestack = List[ ];
+~notestack = List[];
 // Create bassline synth object
 ~bassline = Synth(\AcidBass);
 
