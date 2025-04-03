@@ -98,12 +98,10 @@ set(Open303_cpp_files
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_FourierTransformerRadix2.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_MipMappedWaveTable.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_RealFunctions.h
-    plugins/Open303/lib/Open303/Source/DSPCode/rosic_AcidSequencer.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_Complex.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_FunctionTemplates.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_NumberManipulations.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_TeeBeeFilter.cpp
-    plugins/Open303/lib/Open303/Source/DSPCode/rosic_AcidSequencer.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_Complex.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_FunctionTemplates.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_NumberManipulations.h
