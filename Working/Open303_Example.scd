@@ -15,7 +15,6 @@ s.waitForBoot {
 		volume      = 0.9,
 		filtermorph = 0.0,
 		filterdrive = 0.0,
-		distortion  = 0.0,
 		pan         = 0.0;
 
 		// Declare vars
@@ -29,13 +28,6 @@ s.waitForBoot {
 			gate, notenum, notevel, notealloff,
 			waveform, cutoff, resonance, envmod, decay, accent, volume,
 			filtermorph, filterdrive
-		);
-
-		// Apply distortion. Requires AnalogVintageDistortion extension from:
-		// https://github.com/madskjeldgaard/portedplugins/tree/main
-		sig = AnalogVintageDistortion.ar(
-			sig, drivegain: distortion, bias: 0.1, lowgain: -3.dbamp,
-			highgain: -9.dbamp, shelvingfreq: 600, oversample: 1
 		);
 
 		// Output output
@@ -119,7 +111,7 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:27);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\distortion, val / 127);
+	~bassline.set(\filtermorph, val / 127);
 }, ccNum:28);
 
 )
