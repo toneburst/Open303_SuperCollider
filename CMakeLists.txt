@@ -88,12 +88,10 @@ set(Open303_cpp_files
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_EllipticQuarterBandFilter.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_MidiNoteEvent.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_Open303.h
-    plugins/Open303/lib/Open303/Source/DSPCode/rosic_AcidPattern.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_BlendOscillator.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_FourierTransformerRadix2.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_MipMappedWaveTable.cpp
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_RealFunctions.cpp
-    plugins/Open303/lib/Open303/Source/DSPCode/rosic_AcidPattern.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_BlendOscillator.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_FourierTransformerRadix2.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_MipMappedWaveTable.h
