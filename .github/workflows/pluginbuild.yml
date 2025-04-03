@@ -26,9 +26,9 @@ jobs:
       SC_PATH: ${{ github.workspace }}/supercollider
       BUILD_PATH: ${{ github.workspace }}/build
       INSTALL_PATH: ${{ github.workspace }}/build/Install
-      ARCHIVE_NAME: Open303-${{ matrix.name }}.zip
+      ARCHIVE_NAME: Open303_SuperCollider-${{ matrix.name }}.zip
     steps:
-    - name: Checkout Open303
+    - name: Checkout Open303_SuperCollider
       uses: actions/checkout@v3
 
     - name: Checkout SuperCollider
@@ -61,14 +61,14 @@ jobs:
       if: runner.os != 'Windows'
       shell: bash
       working-directory: ${{ env.INSTALL_PATH }}
-      run: zip -r "$ARCHIVE_NAME" "Open303"
+      run: zip -r "$ARCHIVE_NAME" "Open303_SuperCollider"
 
       # Gather all files in a zip
     - name: Zip up build (Windows)
       if: runner.os == 'Windows'
       shell: bash
       working-directory: ${{ env.INSTALL_PATH }}
-      run: 7z a "$ARCHIVE_NAME" -tzip "Open303"
+      run: 7z a "$ARCHIVE_NAME" -tzip "Open303_SuperCollider"
 
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
