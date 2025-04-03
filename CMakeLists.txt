@@ -109,10 +109,10 @@ set(Open303_cpp_files
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_TeeBeeFilterMorph.cpp
 )
 set(Open303_sc_files
-    plugins/Open303/Open303.sc
+    plugins/toneburst/Open303.sc
 )
 set(Open303_schelp_files
-    plugins/Open303/Open303.schelp
+    plugins/toneburst/Open303.schelp
 )
 
 sc_add_server_plugin(
