@@ -47,8 +47,10 @@ s.waitForBoot {
 
 ( // Start it
 
-// Create note-stack list
+// We need to setup a "mono-legato" note-handling system so that the synth can correctly add slides to overlapping notes.
+// Create note-stack list. This will contain MIDI note numbers of all currently-held keys
 ~notestack = List[];
+
 // Create bassline synth object
 ~bassline = Synth(\AcidBass);
 
@@ -58,7 +60,7 @@ MIDIIn.connectAll;
 
 // MIDI functions
 MIDIFunc.noteOn({ |vel, num|
-	// Add new note to end of note-stack
+	// Add new note to note-stack
 	~notestack.add(num);
 	// If note-stack size is now 1, this is a non-legato note
 	if (~notestack.size == 1) {
@@ -76,7 +78,6 @@ MIDIFunc.noteOn({ |vel, num|
 MIDIFunc.noteOff({ |vel, num|
 	// Seach for note index in note-stack and remove
 	~notestack.do({ arg item, i; if (item == num) { ~notestack.removeAt(i); }});
-	// note-stack could be sorted at this point to add lowest/highest-note priority legato release response
 	// Check if this we've just released the last held note
 	if (~notestack.size == 0) {
 		// ...we have. Pull gate low and send note index to synth (velocity not required). Synth will release note
