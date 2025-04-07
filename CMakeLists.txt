@@ -116,7 +116,7 @@ set(Open303_schelp_files
 )
 
 sc_add_server_plugin(
-    "Open303_SuperCollider/Open303" # destination directory
+    "Open303SuperCollider/Open303" # destination directory
     "Open303" # target name
     "${Open303_cpp_files}"
     "${Open303_sc_files}"
