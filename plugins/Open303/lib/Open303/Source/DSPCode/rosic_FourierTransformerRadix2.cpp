@@ -43,7 +43,7 @@ void FourierTransformerRadix2::setBlockSize(int newBlockSize)
     if( newBlockSize != N )
     {
       N    = newBlockSize;
-      logN = (int) floor( log2((double) N + 0.5 ) );
+      logN = (int) floor( rosicLog2((double) N + 0.5 ) );
       updateNormalizationFactor();
 
       if( w != NULL )
