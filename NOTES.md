@@ -5,13 +5,13 @@
 
 # BUILD NOTES:
 
-SuperCollider source must be in same directory as plugin project.
+SuperCollider source must be in same directory as plugin project!
 
 ## Building:
 
 To create build files, run
 ```
-cmake .. DSC_PATH=../supercollider -DCMAKE_BUILD_TYPE=Debug
+cmake .. -DCMAKE_BUILD_TYPE=Release
 ```
 ...from project build directory (create if required).
 
