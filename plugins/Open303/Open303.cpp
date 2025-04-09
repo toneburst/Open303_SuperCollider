@@ -88,18 +88,18 @@ namespace Open303 {
 
         // New gate
         if(gate && !m_lastGate) {
-            //cout << "PLUGIN NOTEON " << notenum << "\n";
+            //cout << "PLUGIN NOTEON " << noteNum << "\n";
             o303.triggerNote(noteNum, accent);
         }
         // Gate still high but note changed. Slide to new note
         if((noteNum != m_lastNoteNum) && (gate && m_lastGate)) {
-            //cout << "PLUGIN SLIDETO " << notenum << "\n";
+            //cout << "PLUGIN SLIDETO " << noteNum << "\n";
             o303.slideToNote(noteNum, accent);
         }
         // Last note off
         if(m_lastGate && !gate) {
-            //cout << "PLUGIN LAST NOTE OFF " << notenum << "\n";
-            //o303.releaseNote(notenum);
+            //cout << "PLUGIN LAST NOTE OFF " << noteNum << "\n";
+            //o303.releaseNote(noteNum);
             o303.allNotesOff();
         }
         // Detect all-notes-off trigger

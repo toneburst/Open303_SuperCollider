@@ -72,7 +72,7 @@ void MipMappedWaveTable::initPrototypeTable()
 
 void MipMappedWaveTable::initTableSet()
 {
-  int t, i; // indices fo table and position
+  int t, i; // indices for table and position
   for(t=0; t<numTables; t++)
     for(i=0; i<tableLength+4; i++)
       tableSet[t][i] = 0.0;
