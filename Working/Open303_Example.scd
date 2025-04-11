@@ -107,11 +107,11 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:26);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\volume, val / 127);
+	~bassline.set(\filtermorph, val / 127);
 }, ccNum:27);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\filtermorph, val / 127);
+	~bassline.set(\volume, val / 127);
 }, ccNum:28);
 
 )

@@ -127,7 +127,7 @@ namespace Open303 {
             o303.setDecay(       static_cast<double>(slopedDecay.consume()));
             o303.setAccent(      static_cast<double>(slopedAccent.consume()));
             o303.setVolume(      static_cast<double>(slopedVolume.consume()));
-            o303.setFilterMorph( static_cast<double>(slopedFilterMorph.consume()));
+            //o303.setFilterMorph( static_cast<double>(slopedFilterMorph.consume()));
             o303.setFilterDrive( static_cast<double>(slopedFilterDrive.consume()));
 
             // Call Open303 render function
