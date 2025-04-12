@@ -19,7 +19,7 @@ jobs:
           - name: macOS-INTEL
             os: macos-13
 
-          - name: Linux-x64
+          - name: Linux-X64
             os: ubuntu-latest
           
           - name: Linux-ARM64

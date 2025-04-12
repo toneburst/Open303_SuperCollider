@@ -26,15 +26,40 @@ function(sc_do_initial_compiler_config)
     endif()
 endfunction()
 
+# Check machine hostname
+# Modified from: https://stackoverflow.com/questions/76848813/cmake-dynamically-determine-cpu-architecture
+function(host_is_norns var)
+    # Check hostname
+    execute_process(COMMAND uname -n
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        OUTPUT_VARIABLE ${var})
+    set(${var} ${${var}} PARENT_SCOPE)
+endfunction()
+
 function(sc_config_compiler_flags target)
     if(CMAKE_CXX_COMPILER_ID MATCHES "Clang|AppleClang|GNU")
-        target_compile_options(${target} PUBLIC
-            $<$<BOOL:${has_sse}>:-msse>
-            $<$<BOOL:${has_sse2}>:-msse2>
-            $<$<BOOL:${has_sse_fp}>:-mfpmath=sse>
-            $<$<BOOL:${NATIVE}>:-march=native>
-            $<$<BOOL:${STRICT}>:-Wall -Wextra -Werror -Wpedantic>
+        # Attempt to determine if platform is Norn
+        # Will fail if hostname has been changed from default 'norns'!
+        host_is_norns(machine)
+        if(machine STREQUAL "norns")
+            message(STATUS "Host is norns. Set appropriate compiler flags")
+            target_compile_options(${target} PUBLIC
+                -o0
+                -mcpu=cortex-a53
+                -mtune=cortex-a53
+                -mfpu=neon-fp-armv8
+                -mfloat-abi=hard
             )
+        else()
+        message(STATUS "Host is non-norns Unix-based system")
+            target_compile_options(${target} PUBLIC
+                $<$<BOOL:${has_sse}>:-msse>
+                $<$<BOOL:${has_sse2}>:-msse2>
+                $<$<BOOL:${has_sse_fp}>:-mfpmath=sse>
+                $<$<BOOL:${NATIVE}>:-march=native>
+                $<$<BOOL:${STRICT}>:-Wall -Wextra -Werror -Wpedantic>
+            )
+        endif()
     elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         # these options only apply if we're doing a 32-bit build, otherwise they cause a diagnostic
         # https://stackoverflow.com/questions/1067630/sse2-option-in-visual-c-x64
