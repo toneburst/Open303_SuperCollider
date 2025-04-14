@@ -1,7 +1,7 @@
 // PluginOpen303.cpp
 // toneburst (the_voder@yahoo.co.uk)
 
-#include <iostream>
+#include <iostream> // For cout
 
 #include "SC_PlugIn.hpp"
 
@@ -88,7 +88,8 @@ namespace Open303 {
 
         // New gate
         if(gate && !m_lastGate) {
-            //cout << "PLUGIN NOTEON " << noteNum << "\n";
+            cout << "PLUGIN Filter coefficients (calculateCoefficientsApprox4) \n";
+            o303.getFilterCoefficients();
             o303.triggerNote(noteNum, accent);
         }
         // Gate still high but note changed. Slide to new note

@@ -27,8 +27,6 @@ Open303::Open303()
   pitchWheelFactor =     1.0;
   currentNote      =      -1;
   currentVel       =       0;
-  noteOffCountDown =       0;
-  slideToNextNote  =   false;
   idle             =    true;
 
   setEnvMod(25.0);

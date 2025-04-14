@@ -5,6 +5,7 @@
 #include "rosic_BlendOscillator.h"
 #include "rosic_BiquadFilter.h"
 #include "rosic_TeeBeeFilterMorph.h"
+//#include "rosic_TeeBeeFilterMorph.h"
 #include "rosic_AnalogEnvelope.h"
 #include "rosic_DecayEnvelope.h"
 #include "rosic_LeakyIntegrator.h"
@@ -58,7 +59,7 @@ namespace rosic
     void setResonance(double newResonance) { filter.setResonance(newResonance); }
 
     /** Filter morph (low/band/high-pass) */
-    void setFilterMorph(double newFilterMorphPosition) { filter.setFilterMorph(newFilterMorphPosition); }
+    //void setFilterMorph(double newFilterMorphPosition) { filter.setFilterMorph(newFilterMorphPosition); }
 
     /** Sets the modulation depth of the filter's cutoff frequency by the filter-envelope generator 
     (in percent). */
@@ -221,6 +222,8 @@ namespace rosic
     /** Returns the amplitudes envelope's release time (in milliseconds). */
     double getAmpRelease() const { return normalAmpRelease; }
 
+    void  getFilterCoefficients() { filter.getFilterCoefficients();  };
+
     //-----------------------------------------------------------------------------------------------
     // audio processing:
 
@@ -256,7 +259,8 @@ namespace rosic
 
     MipMappedWaveTable        waveTable1, waveTable2;
     BlendOscillator           oscillator;
-    TeeBeeFilterMorph         filter;
+    TeeBeeFilter              filter;
+    //TeeBeeFilterMorph         filter;
     AnalogEnvelope            ampEnv; 
     DecayEnvelope             mainEnv;
     LeakyIntegrator           pitchSlewLimiter;
@@ -311,8 +315,6 @@ namespace rosic
     double n1, n2;           // normalizers for the RCs that are driven by the MEG
     int    currentNote;      // note which is currently played (-1 if none)
     int    currentVel;       // velocity of currently played note
-    int    noteOffCountDown; // a countdown variable till next note-off in sequencer mode
-    bool   slideToNextNote;  // indicate that we need to slide to the next note in sequencer mode
     bool   idle;             // flag to indicate that we have currently nothing to do in getSample
 
     // MIDI notes list
@@ -360,7 +362,7 @@ namespace rosic
     {
       tmp  = -oscillator.getSample();         // the raw oscillator signal 
       tmp  = highpass1.getSample(tmp);        // pre-filter highpass
-      tmp  = filter.getSample(tmp);           // now it's filtered
+      tmp  = filter.getSample(tmp);           // now it's filtered with 303 filter
       tmp  = antiAliasFilter.getSample(tmp);  // anti-aliasing filtered
 
     }

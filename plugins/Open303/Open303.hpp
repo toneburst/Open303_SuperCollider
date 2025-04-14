@@ -29,7 +29,7 @@ private:
   bool   m_lastGate{false};
   bool   m_lastNoteAllOff{0};
   int    m_lastNoteNum{60};
-  
+
   const int accentThreshold{100};
 
   // Param state (initialised in constructor)

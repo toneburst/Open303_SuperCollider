@@ -1,3 +1,5 @@
+#include <iostream> // For cout
+
 #include "rosic_TeeBeeFilter.h"
 
 using namespace rosic;
@@ -23,6 +25,11 @@ TeeBeeFilter::TeeBeeFilter()
 
   setMode(mode);
   calculateCoefficientsExact();
+  
+  // DEBUG: print current filter coefficients
+  std::cout << "PLUGIN Filter init (calculateCoefficientsExact):\n";
+  getFilterCoefficients();
+
   reset();
 }
 
@@ -89,4 +96,22 @@ void TeeBeeFilter::reset()
   y2 = 0.0;
   y3 = 0.0;
   y4 = 0.0;
+}
+
+// DEBUG: Print current filter coefficients
+void TeeBeeFilter::getFilterCoefficients()
+{
+  std::cout << "b0: " << b0 << "\n";
+  std::cout << "a1: " << a1 << "\n";
+  std::cout << "y1: " << y1 << "\n";
+  std::cout << "y2: " << y2 << "\n";
+  std::cout << "y3: " << y3 << "\n";
+  std::cout << "y4: " << y4 << "\n";
+  std::cout << "c0: " << c0 << "\n";
+  std::cout << "c1: " << c1 << "\n";
+  std::cout << "c2: " << c2 << "\n";
+  std::cout << "c3: " << c3 << "\n";
+  std::cout << "c4: " << c4 << "\n";
+  std::cout << "k: "  << k  << "\n";
+  std::cout << "PLUGIN End filter coefficients\n";
 }

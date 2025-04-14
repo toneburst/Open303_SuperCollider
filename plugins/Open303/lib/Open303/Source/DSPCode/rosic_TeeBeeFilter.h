@@ -1,3 +1,5 @@
+#include <iostream> // For cout
+
 #ifndef rosic_TeeBeeFilter_h
 #define rosic_TeeBeeFilter_h
 
@@ -100,6 +102,8 @@ namespace rosic
     /** Returns the cutoff frequency for the highpass filter in the feedback path. */
     double getFeedbackHighpassCutoff() const { return feedbackHighpass.getCutoff(); }
 
+    void getFilterCoefficients();
+
     //---------------------------------------------------------------------------------------------
     // audio processing:
 
@@ -117,7 +121,7 @@ namespace rosic
     INLINE void calculateCoefficientsApprox4();
 
     /** Implements the waveshaping nonlinearity between the stages. */
-    INLINE double shape(double x);
+    //INLINE double shape(double x);
 
     /** Resets the internal state variables. */
     void reset();
@@ -126,20 +130,20 @@ namespace rosic
 
   protected:
 
-    double b0, a1;              // coefficients for the first order sections
-    double y1, y2, y3, y4;      // output signals of the 4 filter stages 
-    double c0, c1, c2, c3, c4;  // coefficients for combining various ouput stages
-    double k;                   // feedback factor in the loop
-    double g;                   // output gain
-    double driveFactor;         // filter drive as raw factor
-    double cutoff;              // cutoff frequency
-    double drive;               // filter drive in decibels
-    double resonanceRaw;        // resonance parameter (normalized to 0...1)
-    double resonanceSkewed;     // mapped resonance parameter to make it behave more musical
-    double sampleRate;          // the sample rate in Hz
-    double twoPiOverSampleRate; // 2*PI/sampleRate
-    int    mode;                // the selected filter-mode
-    int    oldMode;             // previous filter-mode
+    double b0{0.132792}, a1{-0.867208};       // coefficients for the first order sections
+    double y1{0}, y2{0}, y3{0}, y4{0};        // output signals of the 4 filter stages 
+    double c0{1}, c1{0}, c2{0}, c3{0}, c4{0}; // coefficients for combining various ouput stages
+    double k{0};                              // feedback factor in the loop
+    double g;                                 // output gain
+    double driveFactor;                       // filter drive as raw factor
+    double cutoff;                            // cutoff frequency
+    double drive;                             // filter drive in decibels
+    double resonanceRaw;                      // resonance parameter (normalized to 0...1)
+    double resonanceSkewed;                   // mapped resonance parameter to make it behave more musical
+    double sampleRate;                        // the sample rate in Hz
+    double twoPiOverSampleRate;               // 2*PI/sampleRate
+    int    mode;                              // the selected filter-mode
+    int    oldMode;                           // previous filter-mode
 
     OnePoleFilter feedbackHighpass;
 
@@ -264,19 +268,34 @@ namespace rosic
       g  = (g * (1.0 + r)); 
       k  = k * r;                                   // k is ready now 
     }
+
+    // std::cout << "PLUGIN Filter coefficients (calculateCoefficientsApprox4):\n";
+    // std::cout << "b0: " << b0 << "\n";
+    // std::cout << "a1: " << a1 << "\n";
+    // std::cout << "y1: " << y1 << "\n";
+    // std::cout << "y2: " << y2 << "\n";
+    // std::cout << "y3: " << y3 << "\n";
+    // std::cout << "y4: " << y4 << "\n";
+    // std::cout << "c0: " << c0 << "\n";
+    // std::cout << "c1: " << c1 << "\n";
+    // std::cout << "c2: " << c2 << "\n";
+    // std::cout << "c3: " << c3 << "\n";
+    // std::cout << "c4: " << c4 << "\n";
+    // std::cout << "k: " << k << "\n";
+    // std::cout << "PLUGIN End filter coefficients\n";
   }
 
-  INLINE double TeeBeeFilter::shape(double x)
-  {
-    // return tanhApprox(x); // \todo: find some more suitable nonlinearity here
-    //return x; // test
+  // INLINE double TeeBeeFilter::shape(double x)
+  // {
+  //   // return tanhApprox(x); // \todo: find some more suitable nonlinearity here
+  //   //return x; // test
 
-    const double r6 = 1.0/6.0;
-    x = clip(x, -SQRT2, SQRT2);
-    return x - r6*x*x*x;
+  //   const double r6 = 1.0/6.0;
+  //   x = clip(x, -SQRT2, SQRT2);
+  //   return x - r6*x*x*x;
 
-    //return clip(x, -1.0, 1.0);
-  }
+  //   //return clip(x, -1.0, 1.0);
+  // }
 
   INLINE double TeeBeeFilter::getSample(double in)
   {
@@ -321,7 +340,8 @@ namespace rosic
     y4 = y3 + a1*(y3-y4); // \todo: performance test both versions of the ladder
     //y4 = shape(y3 + a1*(y3-y4)); // \todo: performance test both versions of the ladder
 
-    return 8.0 * (c0*y0 + c1*y1 + c2*y2 + c3*y3 + c4*y4);;
+    // Combine poles
+    return 8.0 * (c0*y0 + c1*y1 + c2*y2 + c3*y3 + c4*y4);
   }
 
 }
