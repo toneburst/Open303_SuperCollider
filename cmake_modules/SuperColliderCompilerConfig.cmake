@@ -44,8 +44,7 @@ function(sc_config_compiler_flags target)
         if(machine STREQUAL "norns")
             message(STATUS "Host is norns. Set appropriate compiler flags")
             target_compile_options(${target} PUBLIC
-                -o0
-                -g3
+                -o1
                 -mcpu=cortex-a53
                 -mtune=cortex-a53
                 -mfpu=neon-fp-armv8

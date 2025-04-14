@@ -73,7 +73,6 @@ s.waitForBoot {
 		// Create output
 		var sig;
 		sig = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermorph, filterdrive);
-		//sig = (sig * linexp(dist, -1, 1, 1, 30)).distort * dist.linexp(-1, 1, 1, 0.15);
 		// Output output
 		Out.ar(out, Pan2.ar(sig, pan, 1.0));
 	}).add;

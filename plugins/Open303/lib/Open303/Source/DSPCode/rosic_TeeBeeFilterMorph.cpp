@@ -54,3 +54,11 @@ void TeeBeeFilterMorph::reset()
   filter0.reset();
   filter1.reset();
 }
+
+void TeeBeeFilterMorph::getFilterState() 
+{
+  std::cout << "Filter 0 state: \n";
+  filter0.getFilterState();
+  std::cout << "Filter 1 state: \n";
+  filter1.getFilterState(); 
+}

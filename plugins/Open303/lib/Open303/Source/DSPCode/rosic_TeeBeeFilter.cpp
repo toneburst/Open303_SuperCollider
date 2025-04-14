@@ -1,5 +1,3 @@
-#include <iostream> // For cout
-
 #include "rosic_TeeBeeFilter.h"
 
 using namespace rosic;
@@ -27,8 +25,8 @@ TeeBeeFilter::TeeBeeFilter()
   calculateCoefficientsExact();
   
   // DEBUG: print current filter coefficients
-  std::cout << "PLUGIN Filter init (calculateCoefficientsExact):\n";
-  getFilterCoefficients();
+  //std::cout << "PLUGIN Filter init: \n";
+  //getFilterState();
 
   reset();
 }
@@ -98,20 +96,35 @@ void TeeBeeFilter::reset()
   y4 = 0.0;
 }
 
-// DEBUG: Print current filter coefficients
-void TeeBeeFilter::getFilterCoefficients()
+void TeeBeeFilter::getFilterState()
 {
+  std::cout << "cutoff: "  << cutoff  << "\n";
+  std::cout << "resonanceRaw: "  << resonanceRaw  << "\n";
+  std::cout << "resonanceSkewed: "  << resonanceSkewed  << "\n";
+  std::cout << "sampleRate: "  << sampleRate  << "\n";
+  std::cout << "twoPiOverSampleRate: "  << twoPiOverSampleRate  << "\n";
+  
+  std::cout << "Coefficients for the first order sections:\n";
   std::cout << "b0: " << b0 << "\n";
   std::cout << "a1: " << a1 << "\n";
+  
+  std::cout << "Output signals of the 4 filter stages:\n";
   std::cout << "y1: " << y1 << "\n";
   std::cout << "y2: " << y2 << "\n";
   std::cout << "y3: " << y3 << "\n";
   std::cout << "y4: " << y4 << "\n";
+  
+  std::cout << "Coefficients for combining various ouput stages:\n";
   std::cout << "c0: " << c0 << "\n";
   std::cout << "c1: " << c1 << "\n";
   std::cout << "c2: " << c2 << "\n";
   std::cout << "c3: " << c3 << "\n";
   std::cout << "c4: " << c4 << "\n";
+
+  std::cout << "Feedback factor in the loop:\n";
   std::cout << "k: "  << k  << "\n";
-  std::cout << "PLUGIN End filter coefficients\n";
+
+  std::cout << "Output gain:\n";
+  std::cout << "g: "  << g  << "\n";
+  std::cout << "\n";
 }

@@ -4,8 +4,8 @@
 #include "rosic_MidiNoteEvent.h"
 #include "rosic_BlendOscillator.h"
 #include "rosic_BiquadFilter.h"
+//#include "rosic_TeeBeeFilter.h"
 #include "rosic_TeeBeeFilterMorph.h"
-//#include "rosic_TeeBeeFilterMorph.h"
 #include "rosic_AnalogEnvelope.h"
 #include "rosic_DecayEnvelope.h"
 #include "rosic_LeakyIntegrator.h"
@@ -59,7 +59,7 @@ namespace rosic
     void setResonance(double newResonance) { filter.setResonance(newResonance); }
 
     /** Filter morph (low/band/high-pass) */
-    //void setFilterMorph(double newFilterMorphPosition) { filter.setFilterMorph(newFilterMorphPosition); }
+    void setFilterMorph(double newFilterMorphPosition) { filter.setFilterMorph(newFilterMorphPosition); }
 
     /** Sets the modulation depth of the filter's cutoff frequency by the filter-envelope generator 
     (in percent). */
@@ -222,7 +222,8 @@ namespace rosic
     /** Returns the amplitudes envelope's release time (in milliseconds). */
     double getAmpRelease() const { return normalAmpRelease; }
 
-    void  getFilterCoefficients() { filter.getFilterCoefficients();  };
+    /** Returns the state all filter-related variables */
+    void  getFilterState() { filter.getFilterState(); };
 
     //-----------------------------------------------------------------------------------------------
     // audio processing:
@@ -259,8 +260,8 @@ namespace rosic
 
     MipMappedWaveTable        waveTable1, waveTable2;
     BlendOscillator           oscillator;
-    TeeBeeFilter              filter;
-    //TeeBeeFilterMorph         filter;
+    //TeeBeeFilter              filter;
+    TeeBeeFilterMorph         filter;
     AnalogEnvelope            ampEnv; 
     DecayEnvelope             mainEnv;
     LeakyIntegrator           pitchSlewLimiter;

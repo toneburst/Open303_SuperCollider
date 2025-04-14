@@ -102,7 +102,7 @@ namespace rosic
     /** Returns the cutoff frequency for the highpass filter in the feedback path. */
     double getFeedbackHighpassCutoff() const { return feedbackHighpass.getCutoff(); }
 
-    void getFilterCoefficients();
+    void getFilterState();
 
     //---------------------------------------------------------------------------------------------
     // audio processing:
@@ -154,18 +154,18 @@ namespace rosic
 
   INLINE void TeeBeeFilter::setCutoff(double newCutoff, bool updateCoefficients)
   {
-    if( newCutoff != cutoff )
-    {
+    //if( newCutoff != cutoff )
+    //{
       if( newCutoff < 200.0 )  // an absolute floor for the cutoff frequency - tweakable
         cutoff = 200.0;  
-      else if( newCutoff > 20000.0 )
+      else if( newCutoff > 20000.0 ) // an absolute ceiling for the cutoff frequency
         cutoff = 20000.0;
       else
         cutoff = newCutoff;
 
       if( updateCoefficients == true )
         calculateCoefficientsApprox4();
-    }
+    //}
   }
 
   INLINE void TeeBeeFilter::setResonance(double newResonance, bool updateCoefficients)
@@ -269,20 +269,6 @@ namespace rosic
       k  = k * r;                                   // k is ready now 
     }
 
-    // std::cout << "PLUGIN Filter coefficients (calculateCoefficientsApprox4):\n";
-    // std::cout << "b0: " << b0 << "\n";
-    // std::cout << "a1: " << a1 << "\n";
-    // std::cout << "y1: " << y1 << "\n";
-    // std::cout << "y2: " << y2 << "\n";
-    // std::cout << "y3: " << y3 << "\n";
-    // std::cout << "y4: " << y4 << "\n";
-    // std::cout << "c0: " << c0 << "\n";
-    // std::cout << "c1: " << c1 << "\n";
-    // std::cout << "c2: " << c2 << "\n";
-    // std::cout << "c3: " << c3 << "\n";
-    // std::cout << "c4: " << c4 << "\n";
-    // std::cout << "k: " << k << "\n";
-    // std::cout << "PLUGIN End filter coefficients\n";
   }
 
   // INLINE double TeeBeeFilter::shape(double x)

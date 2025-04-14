@@ -105,6 +105,9 @@ namespace rosic
     /** Returns the cutoff frequency for the highpass filter in the feedback path. */
     double getFeedbackHighpassCutoff() const { return filter0.getFeedbackHighpassCutoff(); }
 
+    /** Dump current filter state */
+    void getFilterState();
+
     //---------------------------------------------------------------------------------------------
     // audio processing:
 
