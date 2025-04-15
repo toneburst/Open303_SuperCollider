@@ -148,30 +148,6 @@ void Open303::setPitchBend(double newPitchBend)
 
 void Open303::noteOn(int noteNumber, int velocity, double detune)
 {
-  /*if( sequencer.modeWasChanged() )
-    allNotesOff();
-
-  if( sequencer.getSequencerMode() != AcidSequencer::OFF )
-  {
-    if( velocity == 0 )
-    {
-      sequencer.stop();
-      releaseNote(currentNote);
-      currentNote = -1;
-      currentVel  = 0;
-    }
-    else
-    {
-      sequencer.start();
-      noteOffCountDown = INT_MAX;
-      slideToNextNote  = false;
-      currentNote      = noteNumber;
-      currentVel       = velocity;
-    }
-    idle = false;
-    return;
-  }*/
-
   if( velocity == 0 ) // velocity zero indicates note-off events
   {
     MidiNoteEvent releasedNote(noteNumber, 0);

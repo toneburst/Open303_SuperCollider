@@ -156,7 +156,7 @@ namespace rosic
   {
     //if( newCutoff != cutoff )
     //{
-      if( newCutoff < 200.0 )  // an absolute floor for the cutoff frequency - tweakable
+      if( newCutoff < 100.0 )  // an absolute floor for the cutoff frequency - tweakable
         cutoff = 200.0;  
       else if( newCutoff > 20000.0 ) // an absolute ceiling for the cutoff frequency
         cutoff = 20000.0;

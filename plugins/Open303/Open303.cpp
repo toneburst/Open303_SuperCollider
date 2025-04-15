@@ -45,7 +45,11 @@ namespace Open303 {
 
     // Control-rate loop
     void Open303::next(int nSamples) {
-        // Control parameters
+        
+        ////////////////////////
+        // Control Parameters //
+        ////////////////////////
+
         // (at Audio rate, the input values are supplied in a block of nSamples values (as floats).
         // "in0" is the first value in the block (although all other values are probably the same))
 
@@ -60,18 +64,19 @@ namespace Open303 {
         // Conversion functions from Open303 Globalfunctions.h
         // Conversion function args: <function>(in, inMin, inMax, outMin, outMax);
         // Param conversion values copied from Open303VST.cpp
-        // All params 0.0 - 1.0 range
+        // All param inputs 0.0 - 1.0 range
         const float waveformParam            = in0(WAVEFORM);    // No scaling required (already in 0-1 range)
-        const float cutoffParam              = linToExp(in0(CUTOFF),      0.0, 1.0, 314.0,  2394.0);        
+        const float cutoffParam              = linToExp(in0(CUTOFF),      0.0, 1.0, 200.0,  2394.0);        
         const float resonanceParam           = linToLin(in0(RESONANCE),   0.0, 1.0,   0.0,   100.0);
         const float envmodParam              = linToLin(in0(ENVMOD),      0.0, 1.0,   0.0,   100.0);
         const float decayParam               = linToExp(in0(DECAY),       0.0, 1.0, 200.0,  2000.0);
         const float accentParam              = linToLin(in0(ACCENT),      0.0, 1.0,   0.0,   100.0);
-        const float volumeParam              = linToLin(in0(VOLUME),      0.0, 1.0, -60.0,     0.0);
+        const float volumeParam              = linToLin(in0(VOLUME),      0.0, 1.0, -60.0,    -2.0);
         const float filterMorphParam         = linToLin(in0(FILTERMORPH), 0.0, 1.0,   0.0, 0.99999);    // Must not reach exactly 1.0
         const float filterDriveParam         = linToLin(in0(FILTERDRIVE), 0.0, 1.0,   0.0,    60.0);    // Not sure of correct range here. Gain is in dB, apparently...
         
         // Create interpolation slopes
+        // The slope signal is used to interpolate between the last value and the new value within the audio render loop
         SlopeSignal<float> slopedWaveform    = makeSlope(waveformParam,    m_waveform);
         SlopeSignal<float> slopedCutoff      = makeSlope(cutoffParam,      m_cutoff);
         SlopeSignal<float> slopedResonance   = makeSlope(resonanceParam,   m_resonance);
@@ -118,6 +123,7 @@ namespace Open303 {
 
         // Fill output buffer with nSamples Open303 synth samples
         for (int i = 0; i < nSamples; ++i) {
+            
             // Update synth params with interpolated value
             // Cast floats to doubles
             o303.setWaveform(    static_cast<double>(slopedWaveform.consume()));

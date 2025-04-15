@@ -96,11 +96,11 @@ namespace rosic
     /** Returns the resonance parameter of this filter. */
     double getResonance() const { return filter0.getResonance(); }
 
-    /** Returns the drive parameter in decibels. */
-    double getDrive() const { return filter0.getDrive(); }
-
     /** Returns filter morph-position */
     double getFilterMorph() { return morphPosition; };
+    
+    /** Returns the drive parameter in decibels. */
+    double getDrive() const { return filter0.getDrive(); }
 
     /** Returns the cutoff frequency for the highpass filter in the feedback path. */
     double getFeedbackHighpassCutoff() const { return filter0.getFeedbackHighpassCutoff(); }

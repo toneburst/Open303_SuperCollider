@@ -10,7 +10,6 @@
 #include "rosic_DecayEnvelope.h"
 #include "rosic_LeakyIntegrator.h"
 #include "rosic_EllipticQuarterBandFilter.h"
-//#include "rosic_AcidSequencer.h"
 
 #include <list>
 using namespace std; // for the noteList
@@ -162,6 +161,9 @@ namespace rosic
     /** Returns the filter's resonance amount (in percent) */
     double getResonance() const { return filter.getResonance(); }
 
+    /** Returns the morphing filter morph position */
+    double getFilterMorph() { return filter.getFilterMorph(); }
+
     /** Returns the modulation depth of the filter's cutoff frequency by the filter-envelope 
     generator (in percent). */
     double getEnvMod() const { return envMod; }
@@ -260,18 +262,16 @@ namespace rosic
 
     MipMappedWaveTable        waveTable1, waveTable2;
     BlendOscillator           oscillator;
-    //TeeBeeFilter              filter;
-    TeeBeeFilterMorph         filter;
+    //TeeBeeFilter              filter;  // standard filter
+    TeeBeeFilterMorph         filter; // morphing filter
     AnalogEnvelope            ampEnv; 
     DecayEnvelope             mainEnv;
     LeakyIntegrator           pitchSlewLimiter;
-    //LeakyIntegrator           ampDeClicker;
     BiquadFilter              ampDeClicker;
     LeakyIntegrator           rc1, rc2;
     OnePoleFilter             highpass1, highpass2, allpass; 
     BiquadFilter              notch;
     EllipticQuarterBandFilter antiAliasFilter;
-    //AcidSequencer             sequencer;  // Disable sequencer
 
   protected:
 
@@ -365,7 +365,6 @@ namespace rosic
       tmp  = highpass1.getSample(tmp);        // pre-filter highpass
       tmp  = filter.getSample(tmp);           // now it's filtered with 303 filter
       tmp  = antiAliasFilter.getSample(tmp);  // anti-aliasing filtered
-
     }
 
     // these filters may actually operate without oversampling (but only if we reset them in
@@ -378,9 +377,6 @@ namespace rosic
 
     // find out whether we may switch ourselves off for the next call:
     idle = false;
-    //idle = (sequencer.getSequencerMode() == AcidSequencer::OFF && ampEnv.endIsReached() 
-    //        && fabs(tmp) < 0.000001); // ampEnvOut < 0.000001;
-    //idle = (ampEnv.endIsReached() && fabs(tmp) < 0.000001);
 
     return tmp;
   }

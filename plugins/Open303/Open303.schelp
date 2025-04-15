@@ -7,7 +7,7 @@ description::
 SuperCollider plugin wrapper around Open303 TB303 emulator DSP code by Robin Schmidt
 https://github.com/RobinSchmidt/Open303
 
-Intended for use as a Norns script Engine. Currently unreliable for general use (note events missed, leading to silent or stuck notes)
+Primarily intended for use as a Norns script audio Engine.
 
 classmethods::
 
@@ -15,37 +15,37 @@ method:: ar
 argument:: gate
 Trigger a note on event. Gates and note-numbers must be managed in SCLang in a "mono-legato" setup as Open303 builtin note-handling will not work reliably. See example script below
 argument:: notenum
-MIDI note number of note-on/off event 0-127.
+MIDI note number of note-on/off event. 0-127
 argument:: notevel
-MIDI velocity of note-on/off event 0-127. Set to 0 for note-off.
+MIDI velocity of note-on/off event 0-127. Set to 0 for note-off
 argument:: notealloff
-Trigger an all-notes-off event. Must be a single k-rate pulse with a value of 1.0.
+Trigger an all-notes-off event. Must be a single k-rate pulse with a value of 1.0
 argument:: waveform
-Crossfade between triangle and square waveforms. 0.0-1.0 range.
+Crossfade between triangle and square waveforms. 0.0-1.0 range
 argument:: cutoff
-Filter cutoff frequency. 0.0-1.0 range.
+Filter cutoff frequency. 0.0-1.0 range
 argument:: resonance
-Filter resonance. 0.0-1.0 range.
+Filter resonance. 0.0-1.0 range
 argument:: envmod
-Filter envelope modulation amount. 0-1 range.
+Filter envelope modulation amount. 0-1 range
 argument:: decay
-Filter envelope decay time. 0-1 range.
+Filter envelope decay time. 0-1 range
 argument:: accent
-Accent level. 0-1 range.
+Accent level. 0-1 range
 argument:: volume
-Output volume. 0-1 range. 
+Output volume. 0-1 range
 argument:: filtermorph
-Morph filter from low-pass (standard 303) to band-pass to high-pass response. 0-1 range.
+Morph filter from low-pass (standard 303) to band-pass to high-pass response. 0-1 range
 argument:: filterdrive
-Filter overdrive. 0-1 range.
+Filter overdrive. 0-1 range
 argument:: distortion
-Distortion amount (not yet implemented). 0-1 range.
+Distortion amount. 0-1 range
 
 examples::
 
 code::
 
-// Suggested SynthDef with default parameter values, MIDI note trigger and cutoff control by MIDI CC
+// Suggested SynthDef with default parameter values, mono-legato note-handling and parameter control by MIDI CC
 // Change CC numbers as necessary
 
 ( // SynthDef
@@ -149,11 +149,11 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:26);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\volume, val / 127);
+	~bassline.set(\filtermorph, val / 127);
 }, ccNum:27);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\filtermorph, val / 127);
+	~bassline.set(\volume, val / 127);
 }, ccNum:28);
 
 )

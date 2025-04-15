@@ -44,7 +44,7 @@ private:
   float m_filterdrive;
   float m_distortion;
 
-  // Input inded enumeration
+  // Input indices enumeration
   enum inputs {
     GATE = 0,
     NOTENUM,
@@ -59,7 +59,7 @@ private:
     VOLUME,
     FILTERMORPH,
     FILTERDRIVE,
-    DISTORTION
+    DISTORTION = 13
   };
 
   // Calc function
