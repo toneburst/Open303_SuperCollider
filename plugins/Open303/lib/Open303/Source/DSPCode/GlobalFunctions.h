@@ -1,7 +1,7 @@
 #ifndef GlobalFunctions_h
 #define GlobalFunctions_h
 
-#include <math.h>
+#include <cmath>  // using rather than <math.h> for lerp() function
 #include <stdlib.h>
 #include "GlobalDefinitions.h"
 
@@ -374,8 +374,7 @@ INLINE double expToLinWithOffset(double in, double inMin, double inMax, double o
 
 INLINE double linearBlend(double inA, double inB, double position)
 {
-  double tmp = clamp(position, 0.0, 0.99999);
-  return ((1.0 - tmp) * inA) + (tmp * inB);
+  return std::lerp(inA, inB, position);
 }
 
 template <class T>

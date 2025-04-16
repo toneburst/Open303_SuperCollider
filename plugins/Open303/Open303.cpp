@@ -72,7 +72,7 @@ namespace Open303 {
         const float decayParam               = linToExp(in0(DECAY),       0.0, 1.0, 200.0,  2000.0);
         const float accentParam              = linToLin(in0(ACCENT),      0.0, 1.0,   0.0,   100.0);
         const float volumeParam              = linToLin(in0(VOLUME),      0.0, 1.0, -60.0,    -2.0);
-        const float filterMorphParam         = linToLin(in0(FILTERMORPH), 0.0, 1.0,   0.0, 0.99999);    // Must not reach exactly 1.0
+        const float filterMorphParam         = linToLin(in0(FILTERMORPH), 0.0, 1.0,   0.0,     1.0);
         const float filterDriveParam         = linToLin(in0(FILTERDRIVE), 0.0, 1.0,   0.0,    60.0);    // Not sure of correct range here. Gain is in dB, apparently...
         
         // Create interpolation slopes
