@@ -154,22 +154,25 @@ namespace rosic
 
   INLINE void TeeBeeFilter::setCutoff(double newCutoff, bool updateCoefficients)
   {
-    //if( newCutoff != cutoff )
-    //{
-      if( newCutoff < 100.0 )  // an absolute floor for the cutoff frequency - tweakable
-        cutoff = 200.0;  
-      else if( newCutoff > 20000.0 ) // an absolute ceiling for the cutoff frequency
-        cutoff = 20000.0;
-      else
-        cutoff = newCutoff;
+    // Check value is NaN, return early if yes
+    if(isnan(newCutoff))
+      return;
+    if( newCutoff < 100.0 )  // an absolute floor for the cutoff frequency - tweakable
+      cutoff = 200.0;  
+    else if( newCutoff > 20000.0 ) // an absolute ceiling for the cutoff frequency
+      cutoff = 20000.0;
+    else
+      cutoff = newCutoff;
 
-      if( updateCoefficients == true )
-        calculateCoefficientsApprox4();
-    //}
+    if( updateCoefficients == true )
+      calculateCoefficientsApprox4();
   }
 
   INLINE void TeeBeeFilter::setResonance(double newResonance, bool updateCoefficients)
   {
+    // Check value is NaN, return early if yes
+    if(isnan(newResonance))
+      return;
     resonanceRaw    = 0.01 * newResonance;
     resonanceSkewed = (1.0-exp(-3.0*resonanceRaw)) / (1.0-exp(-3.0));
     if( updateCoefficients == true )

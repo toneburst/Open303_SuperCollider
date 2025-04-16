@@ -108,7 +108,7 @@ namespace Open303 {
             o303.allNotesOff();
         }
         // Detect all-notes-off trigger
-        if(noteAllOff == 1 && m_lastNoteAllOff == 0) {
+        if(noteAllOff && !m_lastNoteAllOff) {
             // Trigger synth all-notes-off
             //cout << "PLUGIN ALL NOTES OFF\n"
             o303.allNotesOff();
