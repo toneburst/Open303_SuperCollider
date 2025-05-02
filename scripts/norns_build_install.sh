@@ -33,8 +33,13 @@ cmake --build . --config Release
 echo "Build complete. Installing to ${INSTALL_DIR}"
 cmake --build . --config Release --target install
 
+# Delete Supernova plugin version
+echo "Deleting Supernova plugin version..."
+rm -rf "${INSTALL_DIR}/Open303SuperCollider/Open303/Open303_supernova.scx"
+
 # Clean up
 echo "Cleaning up build files..."
 rm -rf "$TMP_DIR"
 
-echo "Done!"
+echo "Plugin built and installed to ${INSTALL_DIR}"
+echo "Please delete this script and restart Norns to load the new plugin."
