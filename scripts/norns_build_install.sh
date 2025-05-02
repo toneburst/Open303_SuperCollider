@@ -19,7 +19,6 @@ git clone --recurse-submodules https://github.com/madskjeldgaard/portedplugins.g
 git clone --recurse-submodules https://github.com/supercollider/supercollider.git $SC_DIR
 
 # Create build directory
-
 cd $PROJ_DIR || 'exit'
 echo "Making build directory... "
 mkdir build
@@ -42,4 +41,4 @@ echo "Cleaning up build files..."
 rm -rf "$TMP_DIR"
 
 echo "Plugin built and installed to ${INSTALL_DIR}"
-echo "Please delete this script and restart Norns to load the new plugin."
+echo "Please delete this script and restart your Norns to load the new Open303 extension."
