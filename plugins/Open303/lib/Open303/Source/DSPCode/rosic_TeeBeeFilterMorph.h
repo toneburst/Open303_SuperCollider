@@ -26,27 +26,25 @@ namespace rosic
   public:
 
     /** Enumeration of the available filter modes. */
-    enum modes
+    /*enum modes
     {
-      FLAT = 0,
-      LP_6,
-      LP_12,
-      LP_18,
-      LP_24,
-      HP_6,
-      HP_12,
-      HP_18,
-      HP_24,
-      BP_12_12,
-      BP_6_18,
-      BP_18_6,
-      BP_6_12,
-      BP_12_6,
-      BP_6_6,
-      TB_303,      // ala mystran & kunn (page 40 in the kvr-thread)
-
-      NUM_MODES
-    };
+      FLAT      = 0,
+      LP_6      = 1,
+      LP_12     = 2,
+      LP_18     = 3,
+      LP_24     = 4,
+      HP_6      = 5,
+      HP_12     = 6,
+      HP_18     = 7,
+      HP_24     = 8,
+      BP_12_12  = 9,
+      BP_6_18   = 10,
+      BP_18_6   = 11,
+      BP_6_12   = 12,
+      BP_12_6   = 13,
+      BP_6_6    = 14,
+      TB_303    = 15
+    };*/
 
     //---------------------------------------------------------------------------------------------
     // construction/destruction:
@@ -144,11 +142,11 @@ namespace rosic
   {
     double fracPos, intPos, f0, f1, out;
 
-    fracPos = morphPosition * 2.0;    // Multiply position by 2 to get repeating 0-1 ramp between pos 0>0.5 and 0.5>1.0
-    fracPos = modf(fracPos, &intPos); // Integer part not used
+    fracPos = morphPosition * 2.0;    // multiply position by 2 to get repeating 0-1 ramp between pos 0>0.5 and 0.5>1.0
+    fracPos = modf(fracPos, &intPos); // (integer part not used)
 
     f0 = filter0.getSample(in);
-    f1 = filter1.getSample(in) * 2.0;  // Bandpass is quieter, so bump the level a little
+    f1 = filter1.getSample(in) * 2.0;  // bandpass is quieter, so bump the level a little
     
     // Set blend mode
     if(morphPosition <= 0.5) {

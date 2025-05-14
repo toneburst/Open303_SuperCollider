@@ -10,8 +10,8 @@ using namespace rosic;
 TeeBeeFilterMorph::TeeBeeFilterMorph()
 {
   morphPosition = 0.0;
-  filter0.setMode(TB_303);   // 303 mode initially
-  filter1.setMode(BP_12_12); // bandpass mode
+  filter0.setMode(15);  // TB_303 mode initially
+  filter1.setMode(9);   // BP_12_12 bandpass mode (remains in this mode)
 }
 
 TeeBeeFilterMorph::~TeeBeeFilterMorph()
@@ -40,9 +40,9 @@ void TeeBeeFilterMorph::setFilterMorph(double newMorphPosition)
   // Change filter0 filter mode
   // filter1 stays in band-pass mode. This way, filter 1 only switches mode when it's silent (avoiding clicks).
   if(morphPosition <= 0.5) {
-    filter0.setMode(TB_303);  // 303 mode
+    filter0.setMode(15);  // TB_303 mode
   } else {
-    filter0.setMode(HP_12);   // high-pass mode
+    filter0.setMode(6);   // HP_12 high-pass mode
   }
 }
 

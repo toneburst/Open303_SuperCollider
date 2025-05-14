@@ -374,6 +374,8 @@ INLINE double expToLinWithOffset(double in, double inMin, double inMax, double o
 
 INLINE double linearBlend(double inA, double inB, double position)
 {
+  // return inA * (1.0 - position) + inB * position;
+  // Requires C++20 for std::lerp
   return std::lerp(inA, inB, position);
 }
 

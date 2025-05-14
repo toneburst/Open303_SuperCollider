@@ -2,27 +2,35 @@
 
 # Adapted from:
 # https://github.com/madskjeldgaard/portedplugins/blob/main/scripts/rpi_build
+#
+# This version for offline build/install on Norns. Requires SuperCollider source in same dir as plugin project.
+# This project directory and SuperCollider source should be installed at path /home/we/dust/dev (or edit BASE_DIR below).
 
 # Temp dir for build
-TMP_DIR="/tmp/o303scplugin"
+BASE_DIR="/home/we/dev"
 # Project directory
-PROJ_DIR="${TMP_DIR}/open303_supercollider"
+PROJ_DIR="${BASE_DIR}/Open303_SuperCollider"
 # SuperCollider source directory
-SC_DIR="${TMP_DIR}/supercollider"
+SC_DIR="${BASE_DIR}/supercollider"
 # SuperCollider extension install directory
 INSTALL_DIR=$HOME/.local/share/SuperCollider/Extensions
 
-# Check out plugin repo
-git clone --recurse-submodules https://github.com/madskjeldgaard/portedplugins.git $PROJ_DIR
-
-# Check out SuperCollider source code
-git clone --recurse-submodules https://github.com/supercollider/supercollider.git $SC_DIR
-
 # Create build directory
 cd $PROJ_DIR || 'exit'
+# Delete existing build directory if present
+if [ -d "build" ]; then
+    echo "Deleting existing build directory..."
+    rm -rf build
+fi
 echo "Making build directory... "
 mkdir build
 cd build || 'exit'
+
+# Delete existing extensions
+if [ -d "${INSTALL_DIR}/Open303SuperCollider" ]; then
+    echo "Deleting existing Open303SuperCollider extension..."
+    rm -rf "${INSTALL_DIR}/Open303SuperCollider"
+fi
 
 # Start build process
 echo "Starting build from $(pwd)"
@@ -36,9 +44,5 @@ cmake --build . --config Release --target install
 echo "Deleting Supernova plugin version..."
 rm -rf "${INSTALL_DIR}/Open303SuperCollider/Open303/Open303_supernova.scx"
 
-# Clean up
-echo "Cleaning up build files..."
-rm -rf "$TMP_DIR"
-
 echo "Plugin built and installed to ${INSTALL_DIR}"
-echo "Please delete this script and restart your Norns to load the new Open303 extension."
+echo "Please restart your Norns to load the Open303 extension."
