@@ -47,7 +47,7 @@ message(STATUS "Install directory set to: ${CMAKE_INSTALL_PREFIX}")
 
 ####################################################################################################
 # options
-option(SUPERNOVA "Build plugins for supernova" ON)
+option(SUPERNOVA "Build plugins for supernova" OFF)
 option(SCSYNTH "Build plugins for scsynth" ON)
 option(NATIVE "Optimize for native architecture" OFF)
 option(STRICT "Use strict warning flags" OFF)
@@ -116,7 +116,7 @@ set(Open303_schelp_files
 )
 
 sc_add_server_plugin(
-    "Open303SuperCollider/Open303" # destination directory
+    "toneburst/Open303" # destination directory
     "Open303" # target name
     "${Open303_cpp_files}"
     "${Open303_sc_files}"

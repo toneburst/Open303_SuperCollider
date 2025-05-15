@@ -95,6 +95,10 @@ namespace Open303 {
         if(gate && !m_lastGate) {
             //cout << "PLUGIN NOTEON " << noteNum << "\n";
             o303.triggerNote(noteNum, accent);
+
+            // Debug dump filter state
+            if(accent)
+                o303.getFilterState();
         }
         // Gate still high but note changed. Slide to new note
         if((noteNum != m_lastNoteNum) && (gate && m_lastGate)) {

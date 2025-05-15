@@ -13,7 +13,7 @@ TeeBeeFilter::TeeBeeFilter()
   resonanceRaw        =     0.0;
   resonanceSkewed     =     0.0;
   mode                =  TB_303;
-  oldMode             =    mode;
+  oldMode             =      -1;
   g                   =     1.0;
   sampleRate          = 44100.0;
   twoPiOverSampleRate = 2.0*PI/sampleRate;
@@ -98,6 +98,7 @@ void TeeBeeFilter::reset()
 
 void TeeBeeFilter::getFilterState()
 {
+  std::cout << "Filter Mode: "  << mode  << "\n";
   std::cout << "cutoff: "  << cutoff  << "\n";
   std::cout << "resonanceRaw: "  << resonanceRaw  << "\n";
   std::cout << "resonanceSkewed: "  << resonanceSkewed  << "\n";
@@ -126,5 +127,4 @@ void TeeBeeFilter::getFilterState()
 
   std::cout << "Output gain:\n";
   std::cout << "g: "  << g  << "\n";
-  std::cout << "\n";
 }

@@ -32,23 +32,22 @@ namespace rosic
     /** Enumeration of the available filter modes. */
     enum modes
     {
-      FLAT = 0,
-      LP_6,
-      LP_12,
-      LP_18,
-      LP_24,
-      HP_6,
-      HP_12,
-      HP_18,
-      HP_24,
-      BP_12_12,
-      BP_6_18,
-      BP_18_6,
-      BP_6_12,
-      BP_12_6,
-      BP_6_6,
-      TB_303,      // ala mystran & kunn (page 40 in the kvr-thread)
-
+      FLAT      =  0,
+      LP_6      =  1,
+      LP_12     =  2,
+      LP_18     =  3,
+      LP_24     =  4,
+      HP_6      =  5,
+      HP_12     =  6,
+      HP_18     =  7,
+      HP_24     =  8,
+      BP_12_12  =  9,
+      BP_6_18   = 10,
+      BP_18_6   = 11,
+      BP_6_12   = 12,
+      BP_12_6   = 13,
+      BP_6_6    = 14,
+      TB_303    = 15,   // ala mystran & kunn (page 40 in the kvr-thread)
       NUM_MODES
     };
 
@@ -96,12 +95,13 @@ namespace rosic
     /** Returns the drive parameter in decibels. */
     double getDrive() const { return drive; }
 
-    /** Returns the slected filter mode. */
+    /** Returns the selected filter mode. */
     int getMode() const { return mode; }
 
     /** Returns the cutoff frequency for the highpass filter in the feedback path. */
     double getFeedbackHighpassCutoff() const { return feedbackHighpass.getCutoff(); }
 
+    /** Prints the state of all filter parameters to cout */
     void getFilterState();
 
     //---------------------------------------------------------------------------------------------
@@ -300,8 +300,8 @@ namespace rosic
       y2 +=   b0*(y1-2*y2+y3);
       y3 +=   b0*(y2-2*y3+y4);
       y4 +=   b0*(y3-2*y4);
+      // Return early
       return 2*g*y4;
-      //return 3*y4;
     }
 
     // apply drive and feedback to obtain the filter's input signal:
