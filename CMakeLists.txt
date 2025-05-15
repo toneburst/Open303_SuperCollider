@@ -47,8 +47,8 @@ message(STATUS "Install directory set to: ${CMAKE_INSTALL_PREFIX}")
 
 ####################################################################################################
 # options
-option(SUPERNOVA "Build plugins for supernova" OFF)
 option(SCSYNTH "Build plugins for scsynth" ON)
+option(SUPERNOVA "Build plugins for supernova" OFF)
 option(NATIVE "Optimize for native architecture" OFF)
 option(STRICT "Use strict warning flags" OFF)
 option(NOVA_SIMD "Build plugins with nova-simd support." ON)

@@ -25,9 +25,7 @@ namespace rosic
 
   public:
 
-    /** Enumeration of the available filter modes. */
-    /*enum modes
-    {
+    /** Filter mode indices
       FLAT      = 0,
       LP_6      = 1,
       LP_12     = 2,
@@ -44,7 +42,7 @@ namespace rosic
       BP_12_6   = 13,
       BP_6_6    = 14,
       TB_303    = 15
-    };*/
+    */
 
     //---------------------------------------------------------------------------------------------
     // construction/destruction:
@@ -146,7 +144,7 @@ namespace rosic
     fracPos = modf(fracPos, &intPos); // (integer part not used)
 
     f0 = filter0.getSample(in);
-    f1 = filter1.getSample(in) * 2.0;  // bandpass is quieter, so bump the level a little
+    f1 = filter1.getSample(in);
     
     // Set blend mode
     if(morphPosition <= 0.5) {

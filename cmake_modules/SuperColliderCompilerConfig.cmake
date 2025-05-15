@@ -49,6 +49,11 @@ function(sc_config_compiler_flags target)
                 -mtune=cortex-a53
                 -mfpu=neon-fp-armv8
                 -mfloat-abi=hard
+                $<$<BOOL:${has_sse}>:-msse>
+                $<$<BOOL:${has_sse2}>:-msse2>
+                $<$<BOOL:${has_sse_fp}>:-mfpmath=sse>
+                $<$<BOOL:${NATIVE}>:-march=native>
+                $<$<BOOL:${STRICT}>:-Wall -Wextra -Werror -Wpedantic>
             )
         else()
         message(STATUS "Host is non-norns Unix-based system")

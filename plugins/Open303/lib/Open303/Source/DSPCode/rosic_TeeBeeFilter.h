@@ -134,7 +134,7 @@ namespace rosic
     double y1{0}, y2{0}, y3{0}, y4{0};        // output signals of the 4 filter stages 
     double c0{1}, c1{0}, c2{0}, c3{0}, c4{0}; // coefficients for combining various ouput stages
     double k{0};                              // feedback factor in the loop
-    double g;                                 // output gain
+    double g;                                 // output gain. Calculated dynamically for TB_303 mode. Static value for other modes
     double driveFactor;                       // filter drive as raw factor
     double cutoff;                            // cutoff frequency
     double drive;                             // filter drive in decibels
@@ -259,7 +259,7 @@ namespace rosic
     tmp  = wc2*tmp + pr3*wc + pr2;
     tmp  = wc2*tmp + pr1*wc + pr0; // this is now the scale factor
     k    = r * tmp;
-    g    = 1.0;
+    g    = 8.0;
 
     if( mode == TB_303 )
     {
@@ -288,14 +288,12 @@ namespace rosic
 
   INLINE double TeeBeeFilter::getSample(double in)
   {
-    double y0;
+    // Process input through highpass
+    double y0 = in - feedbackHighpass.getSample(k*y4); 
 
+    // 303 filter mode has different filter
     if( mode == TB_303 )
     {
-      //y0  = in - feedbackHighpass.getSample(k * shape(y4));  
-      y0 = in - feedbackHighpass.getSample(k*y4);  
-      //y0  = in - k*shape(y4);  
-      //y0  = in-k*y4;  
       y1 += 2*b0*(y0-y1+y2);
       y2 +=   b0*(y1-2*y2+y3);
       y3 +=   b0*(y2-2*y3+y4);
@@ -305,24 +303,11 @@ namespace rosic
     }
 
     // apply drive and feedback to obtain the filter's input signal:
-    //double y0 = inputFilter.getSample(0.125*driveFactor*in) - feedbackHighpass.getSample(k*y4);
-    y0 = 0.125*driveFactor*in - feedbackHighpass.getSample(k*y4);  
+    //y0 = 0.125*driveFactor*in - feedbackHighpass.getSample(k*y4); 
+    
+    // drive not implemented in TB_303 filter in OG code, so disabling here
+    y0 *= 0.125;
 
-    /*
-    // cascade of four 1st order sections with nonlinearities:
-    y1 = shape(b0*y0 - a1*y1);
-    y2 = shape(b0*y1 - a1*y2);
-    y3 = shape(b0*y2 - a1*y3);
-    y4 = shape(b0*y3 - a1*y4);
-    */
-
-    // cascade of four 1st order sections with only 1 nonlinearity:
-    /*
-    y1 =       b0*y0 - a1*y1;
-    y2 =       b0*y1 - a1*y2;
-    y3 =       b0*y2 - a1*y3;
-    y4 = shape(b0*y3 - a1*y4);
-    */    
     y1 = y0 + a1*(y0-y1);
     y2 = y1 + a1*(y1-y2);
     y3 = y2 + a1*(y2-y3);
@@ -330,7 +315,7 @@ namespace rosic
     //y4 = shape(y3 + a1*(y3-y4)); // \todo: performance test both versions of the ladder
 
     // Combine poles
-    return 8.0 * (c0*y0 + c1*y1 + c2*y2 + c3*y3 + c4*y4);
+    return g * (c0*y0 + c1*y1 + c2*y2 + c3*y3 + c4*y4);
   }
 
 }

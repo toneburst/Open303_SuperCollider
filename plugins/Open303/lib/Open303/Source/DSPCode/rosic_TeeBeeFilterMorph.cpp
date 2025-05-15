@@ -42,7 +42,7 @@ void TeeBeeFilterMorph::setFilterMorph(double newMorphPosition)
   if(morphPosition <= 0.5) {
     filter0.setMode(15);  // TB_303 mode
   } else {
-    filter0.setMode(6);   // HP_12 high-pass mode
+    filter0.setMode(8);   // HP_24 high-pass mode
   }
 }
 

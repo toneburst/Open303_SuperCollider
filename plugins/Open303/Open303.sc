@@ -7,8 +7,8 @@ Open303 : UGen {
 	// 'noteevent' parameter going positive will trigger a new Open303 note event (noteOn or noteOff)
 	// noteevent must go positive for only one k-rate cycle for each note-on/off received!!
 	// Defaults values from Open303VST.cpp starting at line 14
-	*ar{ | gate = 0.0, notenum = 60.0, notevel = 64.0, notealloff = 0.0, waveform = 0.85, cutoff = 0.229, resonance = 0.5, envmod = 0.25, decay = 0.5, accent = 0.5, volume = 0.9, filtermorph = 0.0, filterdrive = 0.0, distortion = 0.0 |
-      ^this.multiNew('audio', gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermorph, filterdrive, distortion);
+	*ar{ | gate = 0.0, notenum = 60.0, notevel = 64.0, notealloff = 0.0, waveform = 0.85, cutoff = 0.229, resonance = 0.5, envmod = 0.25, decay = 0.5, accent = 0.5, volume = 0.9, filtermorph = 0.0, distortion = 0.0 |
+      ^this.multiNew('audio', gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermorph, distortion);
     }
 
 	checkInputs {		

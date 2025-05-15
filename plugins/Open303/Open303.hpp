@@ -1,8 +1,8 @@
 // PluginOpen303.hpp
 // toneburst (the_voder@yahoo.co.uk)
 /*
-    SuperCollider plugin wrapper around Open303 TB303 emulator DSP code by Robin
-   Schmidt https://github.com/RobinSchmidt/Open303
+  SuperCollider plugin wrapper around Open303 TB303 emulator DSP code by Robin
+  Schmidt https://github.com/RobinSchmidt/Open303
 */
 
 #pragma once
@@ -41,7 +41,6 @@ private:
   float m_accent;
   float m_volume;
   float m_filtermorph;
-  float m_filterdrive;
   float m_distortion;
 
   // Input indices enumeration
@@ -58,8 +57,7 @@ private:
     ACCENT,
     VOLUME,
     FILTERMORPH,
-    FILTERDRIVE,
-    DISTORTION = 13
+    DISTORTION = 12
   };
 
   // Calc function

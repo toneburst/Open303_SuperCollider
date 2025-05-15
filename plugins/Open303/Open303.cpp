@@ -23,7 +23,7 @@ namespace Open303 {
     // CONSTRUCTOR
     Open303::Open303() {
 
-        // Initialize the state of member variables that depend on input aruguments
+        // Initialize the state of member variables that depend on input arguments
         m_waveform  = in0(WAVEFORM);
         m_cutoff    = in0(CUTOFF);
         m_resonance = in0(RESONANCE);
@@ -73,7 +73,7 @@ namespace Open303 {
         const float accentParam              = linToLin(in0(ACCENT),      0.0, 1.0,   0.0,  100.0);
         const float volumeParam              = linToLin(in0(VOLUME),      0.0, 1.0, -60.0,   -2.0);
         const float filterMorphParam         = linToLin(in0(FILTERMORPH), 0.0, 1.0,   0.0, 0.9999); // Set range to 0.9999 to avoid linear blend glitch (should no longer be necessary when using std::lerp, but apparently still is....)
-        const float filterDriveParam         = linToLin(in0(FILTERDRIVE), 0.0, 1.0,   0.0,   60.0); // Not sure of correct range here. Gain is in dB, apparently...
+        //const float filterDriveParam         = linToLin(in0(FILTERDRIVE), 0.0, 1.0,   0.0,   60.0); // Not sure of correct range here. Gain is in dB, apparently...
         
         // Create interpolation slopes
         // The slope signal is used to interpolate between the last value and the new value within the audio render loop
@@ -85,7 +85,7 @@ namespace Open303 {
         SlopeSignal<float> slopedAccent      = makeSlope(accentParam,      m_accent);
         SlopeSignal<float> slopedVolume      = makeSlope(volumeParam,      m_volume);
         SlopeSignal<float> slopedFilterMorph = makeSlope(filterMorphParam, m_filtermorph);
-        SlopeSignal<float> slopedFilterDrive = makeSlope(filterDriveParam, m_filterdrive);
+        //SlopeSignal<float> slopedFilterDrive = makeSlope(filterDriveParam, m_filterdrive);
 
         ///////////////////
         // Note-Handling //
@@ -97,8 +97,8 @@ namespace Open303 {
             o303.triggerNote(noteNum, accent);
 
             // Debug dump filter state
-            if(accent)
-                o303.getFilterState();
+            /*if(accent)
+                //o303.getFilterState();*/
         }
         // Gate still high but note changed. Slide to new note
         if((noteNum != m_lastNoteNum) && (gate && m_lastGate)) {
@@ -138,7 +138,7 @@ namespace Open303 {
             o303.setAccent(      static_cast<double>(slopedAccent.consume()));
             o303.setVolume(      static_cast<double>(slopedVolume.consume()));
             o303.setFilterMorph( static_cast<double>(slopedFilterMorph.consume()));
-            o303.setFilterDrive( static_cast<double>(slopedFilterDrive.consume()));
+            //o303.setFilterDrive( static_cast<double>(slopedFilterDrive.consume()));
 
             // Call Open303 render function
             outbuf[i] = o303.getSample();
@@ -156,7 +156,7 @@ namespace Open303 {
         m_accent        = slopedAccent.value;
         m_volume        = slopedVolume.value;
         m_filtermorph   = slopedFilterMorph.value;
-        m_filterdrive   = slopedFilterDrive.value;
+        //m_filterdrive   = slopedFilterDrive.value;
 
         ///////////////////////////////
         // Update Previous Gate/Note //

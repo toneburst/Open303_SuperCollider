@@ -14,7 +14,7 @@ s.waitForBoot {
 		accent      = 0.5,
 		volume      = 0.9,
 		filtermorph = 0.0,
-		filterdrive = 0.0,
+		filterdrive = 1.0,
 		pan         = 0.0;
 
 		// Declare vars
