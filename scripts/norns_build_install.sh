@@ -1,5 +1,6 @@
 #! /bin/bash
 
+# Build and install Open303 SuperCollider plugin on Norns from GitHub source
 # Adapted from:
 # https://github.com/madskjeldgaard/portedplugins/blob/main/scripts/rpi_build
 
