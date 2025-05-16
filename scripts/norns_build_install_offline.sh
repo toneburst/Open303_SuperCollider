@@ -21,9 +21,10 @@ INSTALL_CACHE="${PROJ_DIR}/build/install_cache"
 # SuperCollider extension install directory
 INSTALL_DIR="/home/we/.local/share/SuperCollider/Extensions"
 
-# Check if SuperCollider source directory exists
+# Check if local SuperCollider source directory exists
 if [ ! -d "$SC_DIR" ]; then
     echo "ERROR: SuperCollider source directory not found at $SC_DIR."
+    echo "Exiting now"
     exit 1
 fi
 
@@ -68,7 +69,9 @@ fi
 
 # Delete Supernova plugin version
 echo "Deleting Supernova plugin version if present..."
-rm -rf "${INSTALL_DIR}/Open303SuperCollider/Open303/Open303_supernova.scx"
+rm -rf "${INSTALL_DIR}/toneburst/Open303/Open303_supernova.scx"
 
 echo "Plugin built and installed to ${INSTALL_DIR}"
 echo "Please restart your Norns to load the Open303 extension."
+
+exit 0

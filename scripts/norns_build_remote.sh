@@ -88,7 +88,7 @@ if [ $? -ne 0 ]; then
     echo "ERROR: Plugin build/install failed."
     exit 1
 else
-    echo "Plugin build and install completed successfully on Norns. Restart your Norns to load the new SuperCollider extension."
+    echo "Plugin build and install completed successfully on Norns. Restart your device to load the new SuperCollider extension(s)."
 fi
 
 exit 0
