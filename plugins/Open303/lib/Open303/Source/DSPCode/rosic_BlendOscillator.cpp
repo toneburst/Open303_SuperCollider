@@ -19,7 +19,7 @@ BlendOscillator::BlendOscillator()
   // somewhat redundant:
   setSampleRate(44100.0);          // sampleRate = 44100 Hz by default
   setFrequency (440.0);            // frequency = 440 Hz by default
-  setStartPhase(0.0);              // sartPhase = 0 by default
+  setStartPhase(0.0);              // startPhase = 0 by default
 
   setWaveForm1(MipMappedWaveTable::SAW);
   setWaveForm2(MipMappedWaveTable::SQUARE);

@@ -42,6 +42,8 @@ private:
   float m_volume;
   float m_filtermorph;
   float m_distortion;
+  float m_extmix;
+  //float m_filterdrive;
 
   // Input indices enumeration
   enum inputs {
@@ -57,7 +59,9 @@ private:
     ACCENT,
     VOLUME,
     FILTERMORPH,
-    DISTORTION = 12
+    DISTORTION,
+    EXTMIX,
+    EXTIN = 14
   };
 
   // Calc function

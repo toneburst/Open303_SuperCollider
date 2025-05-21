@@ -6,7 +6,6 @@
 
 # Directory containing this script
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-
 # Local source directory for SuperCollider source and plugin project (must be in same dir!)
 SOURCE_DIR="${SCRIPT_DIR}/../.."
 # Local plugin project dir name

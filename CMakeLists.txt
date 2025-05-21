@@ -105,8 +105,8 @@ set(Open303_cpp_files
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_NumberManipulations.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_TeeBeeFilter.h
     plugins/Open303/lib/Open303/Source/DSPCode/rosic_TeeBeeFilter.cpp
-    plugins/Open303/lib/Open303/Source/DSPCode/rosic_TeeBeeFilterMorph.h
-    plugins/Open303/lib/Open303/Source/DSPCode/rosic_TeeBeeFilterMorph.cpp
+    plugins/Open303/lib/Open303/Source/DSPCode/tbrst_TeeBeeFilterMorph.h
+    plugins/Open303/lib/Open303/Source/DSPCode/tbrst_TeeBeeFilterMorph.cpp
 )
 set(Open303_sc_files
     plugins/Open303/Open303.sc

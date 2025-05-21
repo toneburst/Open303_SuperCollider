@@ -6,6 +6,7 @@ using namespace rosic;
 
 Open303::Open303()
 {
+  // Default parameter values
   tuning           =   440.0;
   ampScaler        =     1.0;
   oscFreq          =   440.0;
@@ -23,6 +24,9 @@ Open303::Open303()
   normalAmpRelease =     0.0;
   accentAmpRelease =    50.0;
   accentGain       =     0.0;
+  extInMix         =     0.0;
+  extInSample      =     0.0;
+  extInTrim        =     1.0; // Adjust as necessary to match oscillator and ext in levels
   filterDrive      =     0.0;
   pitchWheelFactor =     1.0;
   currentNote      =      -1;

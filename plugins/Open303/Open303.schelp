@@ -35,11 +35,13 @@ Accent level. 0-1 range
 argument:: volume
 Output volume. 0-1 range
 argument:: filtermorph
-Morph filter from low-pass (standard 303) to band-pass to high-pass response. 0-1 range
-argument:: filterdrive
-Filter overdrive. 0-1 range
+Morph filter reponse from low-pass (emulated TB303) to band-pass to high-pass response. 0-1 range
 argument:: distortion
 Distortion amount. 0-1 range
+argument:: extmix
+External input mix. Fades between internal oscillator and external input. 0-1 range
+argument:: extin
+External audio input. Mixed with internal oscillator and fed to the filter. Mono audio signal
 
 examples::
 
@@ -53,26 +55,41 @@ code::
 s.waitForBoot {
 	SynthDef.new("AcidBass", {
 		arg out,
-		gate        = 0.0,
-		notenum     = 60.0,
-		notevel     = 64.0,
-		waveform    = 0.85,
-		cutoff      = 0.229,
-		resonance   = 0.5,
-		envmod      = 0.25,
-		decay       = 0.5,
-		accent      = 0.5,
-		volume      = 0.9,
-		filtermorph = 0.0,
-		filterdrive = 0.0,
-		dist        = 0.0,
-		pan         = 0.0;
+		gate        = 0.0,   // Trigger note
+		notenum     = 60.0,  // MIDI note number of current note
+		notevel     = 64.0,  // MIDI note velocity of current note
+		waveform    = 0.85,  // Waveform saw > square
+		cutoff      = 0.229, // Filter cutoff frequency
+		resonance   = 0.5,   // Filter resonance
+		envmod      = 0.25,  // Filter envelope-mod amount
+		decay       = 0.5,   // Filter envelope decay
+		accent      = 0.5,   // Accent amount
+		volume      = 0.9,   // Synth output volume
+		filtermorph = 0.0,   // Filter-morph 303 -> Bandpass -> Highpass
+		pan         = 0.0;   // Output pan L-R (0 = centre)
 
 		// Declare vars
 		var notealloff = NamedControl.tr(\notealloff);
 		// Create output
 		var sig;
-		sig = Open303.ar(gate, notenum, notevel, notealloff, waveform, cutoff, resonance, envmod, decay, accent, volume, filtermorph, filterdrive);
+
+		// Synth. Requires Open303_SuperCollider extension from:
+		// https://github.com/toneburst/Open303_SuperCollider/tree/main
+		sig = Open303.ar(
+			gate:			gate,
+			notenum:		notenum,
+			notevel:		notevel,
+			notealloff:		notealloff,
+			waveform:		waveform,
+			cutoff:			cutoff,
+			resonance:		resonance,
+			envmod:			envmod,
+			decay:			decay,
+			accent:			accent,
+			volume:			volume,
+			filtermorph:	filtermorph
+		);
+
 		// Output output
 		Out.ar(out, Pan2.ar(sig, pan, 1.0));
 	}).add;
@@ -82,9 +99,11 @@ s.waitForBoot {
 
 ( // Start it
 
-// Create note-stack list
-~notestack = List[ ];
-// Create bassline synth object
+// We need to setup a "mono-legato" note-handling system so that the synth can correctly add slides to overlapping notes.
+// Create note-stack list. This will contain MIDI note numbers of all currently-held keys
+~notestack = List[];
+
+// Create bassline synth instance
 ~bassline = Synth(\AcidBass);
 
 // Start MIDI
@@ -93,7 +112,7 @@ MIDIIn.connectAll;
 
 // MIDI functions
 MIDIFunc.noteOn({ |vel, num|
-	// Add new note to end of note-stack
+	// Add new note to note-stack
 	~notestack.add(num);
 	// If note-stack size is now 1, this is a non-legato note
 	if (~notestack.size == 1) {
@@ -111,7 +130,6 @@ MIDIFunc.noteOn({ |vel, num|
 MIDIFunc.noteOff({ |vel, num|
 	// Seach for note index in note-stack and remove
 	~notestack.do({ arg item, i; if (item == num) { ~notestack.removeAt(i); }});
-	// note-stack could be sorted at this point to add lowest/highest-note priority legato release response
 	// Check if this we've just released the last held note
 	if (~notestack.size == 0) {
 		// ...we have. Pull gate low and send note index to synth (velocity not required). Synth will release note

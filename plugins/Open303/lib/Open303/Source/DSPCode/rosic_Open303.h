@@ -5,11 +5,12 @@
 #include "rosic_BlendOscillator.h"
 #include "rosic_BiquadFilter.h"
 //#include "rosic_TeeBeeFilter.h"
-#include "rosic_TeeBeeFilterMorph.h"
+#include "tbrst_TeeBeeFilterMorph.h"
 #include "rosic_AnalogEnvelope.h"
 #include "rosic_DecayEnvelope.h"
 #include "rosic_LeakyIntegrator.h"
 #include "rosic_EllipticQuarterBandFilter.h"
+#include "GlobalDefinitions.h"  // for linearBlend()
 
 #include <list>
 using namespace std; // for the noteList
@@ -145,6 +146,13 @@ namespace rosic
       ampEnv.setRelease(newAmpRelease); 
     }
 
+    /** Sets external input mix-level and audio sample values */
+    void setExtIn(double newExtInMix, double newExtInSample)
+    {
+      extInMix = newExtInMix;
+      extInSample = newExtInSample * extInTrim;
+    }
+
     //-----------------------------------------------------------------------------------------------
     // inquiry:
 
@@ -224,8 +232,12 @@ namespace rosic
     /** Returns the amplitudes envelope's release time (in milliseconds). */
     double getAmpRelease() const { return normalAmpRelease; }
 
+    /** Returns external input mixlevel */
+    double getExtInMix() const { return extInMix; }
+
     /** Returns the state all filter-related variables */
     void  getFilterState() { filter.getFilterState(); };
+
 
     //-----------------------------------------------------------------------------------------------
     // audio processing:
@@ -311,6 +323,9 @@ namespace rosic
     double accentAmpRelease; // amp-env release time for accented notes
     double accentGain;       // between 0.0...1.0 - to scale the 3rd amp-envelope on accents
     double filterDrive;      // filter overdrive
+    double extInMix;         // mix of the external input (0.0...1.0)
+    double extInSample;      // external input to the filter
+    double extInTrim;        // level trim for the external input
 
     double pitchWheelFactor; // scale factor for oscillator frequency from pitch-wheel
     double n1, n2;           // normalizers for the RCs that are driven by the MEG
@@ -361,10 +376,12 @@ namespace rosic
     double tmp;
     for(int i=1; i<=oversampling; i++)
     {
-      tmp  = -oscillator.getSample();         // the raw oscillator signal 
-      tmp  = highpass1.getSample(tmp);        // pre-filter highpass
-      tmp  = filter.getSample(tmp);           // now it's filtered with 303 filter
-      tmp  = antiAliasFilter.getSample(tmp);  // anti-aliasing filtered
+      tmp  = -oscillator.getSample();                 // the raw oscillator signal
+      //tmp  = linearBlend(tmp, extInSample, extInMix); // external input mixed in (linear crossfade bewtween osc and external input)
+      tmp  = highpass1.getSample(tmp);                // pre-filter highpass
+      tmp  = linearBlend(tmp, extInSample, extInMix); // external input mixed in (linear crossfade bewtween osc and external input)
+      tmp  = filter.getSample(tmp);                   // now it's filtered with 303 filter
+      tmp  = antiAliasFilter.getSample(tmp);          // anti-aliasing filtered
     }
 
     // these filters may actually operate without oversampling (but only if we reset them in
@@ -372,7 +389,7 @@ namespace rosic
     tmp  = allpass.getSample(tmp);
     tmp  = highpass2.getSample(tmp);        
     tmp  = notch.getSample(tmp);
-    tmp *= ampEnvOut;                       // amplified
+    tmp *= ampEnvOut;   // amplified
     tmp *= ampScaler;
 
     // find out whether we may switch ourselves off for the next call:
