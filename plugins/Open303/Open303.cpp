@@ -66,8 +66,10 @@ namespace Open303 {
         // Conversion function args: <function>(in, inMin, inMax, outMin, outMax);
         // Param conversion values copied from Open303VST.cpp
         // All param inputs 0.0 - 1.0 range
+        // Original ranges from Open303VST.cpp
+        // https://github.com/RobinSchmidt/Open303/blob/313bf0d9ade7c1dcb6b3a74f5ea1780a29d70074/Source/VSTPlugIn/Open303VST.cpp#L220C3-L246C11
         const float waveformParam            = in0(WAVEFORM);    // No scaling required (already in 0-1 range)
-        const float cutoffParam              = linToExp(in0(CUTOFF),      0.0, 1.0, 200.0,  394.0);        
+        const float cutoffParam              = linToExp(in0(CUTOFF),      0.0, 1.0, 314.0, 2394.0);    
         const float resonanceParam           = linToLin(in0(RESONANCE),   0.0, 1.0,   0.0,  100.0);
         const float envmodParam              = linToLin(in0(ENVMOD),      0.0, 1.0,   0.0,  100.0);
         const float decayParam               = linToExp(in0(DECAY),       0.0, 1.0, 200.0, 2000.0);
@@ -76,6 +78,8 @@ namespace Open303 {
         const float filterMorphParam         = linToLin(in0(FILTERMORPH), 0.0, 1.0,   0.0, 0.9999); // Set range to 0.9999 to avoid linear blend glitch (should no longer be necessary when using std::lerp, but apparently still is....)
         const float extmixParam              = linToLin(in0(EXTMIX),      0.0, 1.0,   0.0,    1.0); // External input mix
         //const float filterDriveParam         = linToLin(in0(FILTERDRIVE), 0.0, 1.0,   0.0,   60.0); // Not sure of correct range here. Gain is in dB, apparently...
+
+
         
         // Create interpolation slopes
         // The slope signal is used to interpolate between the last value and the new value within the audio render loop

@@ -33,7 +33,7 @@ s.waitForBoot {
 		// Sub-oscillator frequency, with lag applied to slide notes.
 		// NOTE: Open303 synth handles note-slides internally.
 		// Sub-osc may not track the pitch sweep of the Open303 internal oscillator exactly on slide notes!
-		slidetime = 0.25 * slide;
+		slidetime = 0.2 * slide;
 		subfreq = VarLag.kr(subcps, slidetime, -2.0);
 
 		// Create output
