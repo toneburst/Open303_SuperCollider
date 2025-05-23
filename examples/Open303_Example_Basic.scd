@@ -53,7 +53,7 @@ s.waitForBoot {
 			decay:			decay,
 			accent:			accent,
 			volume:			volume,
-			filtermorph:	filtermorph
+			filtermorph:    filtermorph
 		);
 
 		//////////////////
@@ -115,7 +115,8 @@ MIDIFunc.noteOff({ |notevel, notenum|
 });
 
 MIDIFunc.bend({|val, chan, src|
-	~bassline.set(\pitchbend, LinLin(val, 0, 16383, -12.0, 12.0));
+	linlin(val, 0, 16383, -12.0, 12.0).postln;
+	~bassline.set(\pitchbend, linlin(val, 0, 16383, -12.0, 12.0));
 });
 
 MIDIFunc.cc({ |val, ccNum, chan, src|

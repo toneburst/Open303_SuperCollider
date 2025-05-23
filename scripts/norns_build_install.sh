@@ -1,6 +1,7 @@
 #! /bin/bash
 
-# Build and install Open303 SuperCollider plugin on Norns from GitHub source
+# Build and install Open303 SuperCollider plugin on Norns from GitHub source on Norns with internet access.
+# Project and SuperCollider source is deleted after extension installion.
 # Adapted from:
 # https://github.com/madskjeldgaard/portedplugins/blob/main/scripts/rpi_build
 
@@ -43,3 +44,5 @@ rm -rf "$TMP_DIR"
 
 echo "Plugin built and installed to ${INSTALL_DIR}"
 echo "Please delete this script and restart your Norns to load the new Open303 extension."
+
+exit 0

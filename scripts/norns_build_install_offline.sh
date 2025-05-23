@@ -7,7 +7,7 @@
 # Requires SuperCollider source in same dir as this plugin project.
 # This plugin project directory and SuperCollider source should be installed at path /home/we/dust/development/SuperCollider.
 # See below for required paths.
-# Script to be run locally on Norns via SSH or called remotely run on the device from local development machine
+# Script to be run locally on Norns via SSH or remotely run on the device from local development machine
 # (see scripts/norns_build_remote.sh).
 
 # Temp dir for build
