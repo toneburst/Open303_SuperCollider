@@ -26,14 +26,16 @@ Clone the project:
     git clone https://github.com/toneburst/open303_supercollider
     cd open303_supercollider
 
-If you're on a macOS or Linux device, you can use the scripts in the scripts directory to build the extension on your system. You may need to modify the extension install path on Linux.
-See comments in scripts for useage details.
+If you're on a macOS Linux, or Monome Norns device, you can use the scripts in the scripts directory to build the extension on your system. You may need to modify the extension install path on Linux.
+See comments in scripts for usage details.
 
 On Windows, you can use CMake directly to configure and build the extension from this source:
 
     cmake .. -DCMAKE_BUILD_TYPE=Release
     cmake --build . --config Release
     cmake --build . --config Release --target install
+
+I don't have a Windows machine to test, so please reach out of you can help out with a build script for the platform, or if you find issues building or using the extension in Windows.
 
 You may want to manually specify the install location in the first step to point it at your
 SuperCollider extensions directory: add the option `-DCMAKE_INSTALL_PREFIX=/path/to/extensions`.
