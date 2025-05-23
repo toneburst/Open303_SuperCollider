@@ -14,7 +14,8 @@ TeeBeeFilter::TeeBeeFilter()
   resonanceSkewed     =     0.0;
   mode                =  TB_303;
   oldMode             =      -1;
-  g                   =     1.0;
+  g                   =     8.0;
+  gScale              =     1.0;
   sampleRate          = 44100.0;
   twoPiOverSampleRate = 2.0*PI/sampleRate;
 
@@ -72,7 +73,7 @@ void TeeBeeFilter::setMode(int newMode)
       case HP_12:     c0 =  1.0; c1 = -2.0; c2 =  1.0; c3 =  0.0; c4 =  0.0;  g =  8.0; break;
       case HP_18:     c0 =  1.0; c1 = -3.0; c2 =  3.0; c3 = -1.0; c4 =  0.0;  g =  8.0; break;
       case HP_24:     c0 =  1.0; c1 = -4.0; c2 =  6.0; c3 = -4.0; c4 =  1.0;  g =  7.0; break; // used in morphing filter
-      case BP_12_12:  c0 =  0.0; c1 =  0.0; c2 =  1.0; c3 = -2.0; c4 =  1.0;  g = 16.0; break; // used in morphing filter
+      case BP_12_12:  c0 =  0.0; c1 =  0.0; c2 =  1.0; c3 = -2.0; c4 =  1.0;  g = 15.0; break; // used in morphing filter
       case BP_6_18:   c0 =  0.0; c1 =  0.0; c2 =  0.0; c3 =  1.0; c4 = -1.0;  g =  8.0; break;
       case BP_18_6:   c0 =  0.0; c1 =  1.0; c2 = -3.0; c3 =  3.0; c4 = -1.0;  g =  8.0; break;
       case BP_6_12:   c0 =  0.0; c1 =  0.0; c2 =  1.0; c3 = -1.0; c4 =  0.0;  g =  8.0; break;

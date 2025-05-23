@@ -135,6 +135,7 @@ namespace rosic
     double c0{1}, c1{0}, c2{0}, c3{0}, c4{0}; // coefficients for combining various ouput stages
     double k{0};                              // feedback factor in the loop
     double g;                                 // output gain. Calculated dynamically for TB_303 mode. Static value for other modes
+    double gScale;                            // scaling factor for gain (to equalize filter mode output levels)
     double driveFactor;                       // filter drive as raw factor
     double cutoff;                            // cutoff frequency
     double drive;                             // filter drive in decibels
@@ -259,7 +260,7 @@ namespace rosic
     tmp  = wc2*tmp + pr3*wc + pr2;
     tmp  = wc2*tmp + pr1*wc + pr0; // this is now the scale factor
     k    = r * tmp;
-    g    = 8.0;
+    //g    = 8.0;
 
     if( mode == TB_303 )
     {

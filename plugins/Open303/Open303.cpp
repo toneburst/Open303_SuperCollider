@@ -9,7 +9,7 @@
 #include "lib/Open303/Source/DSPCode/rosic_Open303.h"
 
 // Global functions (for parameter scaling)
-#include "lib/Open303/Source/DSPCode/GlobalFunctions.h"
+#include "lib/Open303/Source/DSPCode/GlobalFunctions.h" // For parameter range functions (linToExp, linToLin, etc.)
 
 #include "Open303.hpp"
 
@@ -64,25 +64,23 @@ namespace Open303 {
         // Interpolated parameters. Synth expects doubles, inputs are floats.
         // Conversion functions from Open303 Globalfunctions.h
         // Conversion function args: <function>(in, inMin, inMax, outMin, outMax);
-        // Param conversion values copied from Open303VST.cpp
         // All param inputs 0.0 - 1.0 range
         // Original ranges from Open303VST.cpp
         // https://github.com/RobinSchmidt/Open303/blob/313bf0d9ade7c1dcb6b3a74f5ea1780a29d70074/Source/VSTPlugIn/Open303VST.cpp#L220C3-L246C11
-        const float waveformParam            = in0(WAVEFORM);    // No scaling required (already in 0-1 range)
-        const float cutoffParam              = linToExp(in0(CUTOFF),      0.0, 1.0, 314.0, 2394.0);    
-        const float resonanceParam           = linToLin(in0(RESONANCE),   0.0, 1.0,   0.0,  100.0);
-        const float envmodParam              = linToLin(in0(ENVMOD),      0.0, 1.0,   0.0,  100.0);
-        const float decayParam               = linToExp(in0(DECAY),       0.0, 1.0, 200.0, 2000.0);
-        const float accentParam              = linToLin(in0(ACCENT),      0.0, 1.0,   0.0,  100.0);
-        const float volumeParam              = linToLin(in0(VOLUME),      0.0, 1.0, -60.0,   -2.0);
-        const float filterMorphParam         = linToLin(in0(FILTERMORPH), 0.0, 1.0,   0.0, 0.9999); // Set range to 0.9999 to avoid linear blend glitch (should no longer be necessary when using std::lerp, but apparently still is....)
-        const float extmixParam              = linToLin(in0(EXTMIX),      0.0, 1.0,   0.0,    1.0); // External input mix
-        //const float filterDriveParam         = linToLin(in0(FILTERDRIVE), 0.0, 1.0,   0.0,   60.0); // Not sure of correct range here. Gain is in dB, apparently...
+        const float pitchbendParam           = clamp(in0(PITCHBEND),      -12.0, 12.0);   // Clamp to -12.0 to 12.0 semitones
+        const float waveformParam            = clamp(in0(WAVEFORM),        0.0, 1.0);     // No scaling required (already in 0-1 range)
+        const float cutoffParam              = linToExp(in0(CUTOFF),       0.0, 1.0, 314.0, 2394.0);    
+        const float resonanceParam           = linToLin(in0(RESONANCE),    0.0, 1.0,   0.0,  100.0);
+        const float envmodParam              = linToLin(in0(ENVMOD),       0.0, 1.0,   0.0,  100.0);
+        const float decayParam               = linToExp(in0(DECAY),        0.0, 1.0, 200.0, 2000.0);
+        const float accentParam              = linToLin(in0(ACCENT),       0.0, 1.0,   0.0,  100.0);
+        const float volumeParam              = linToLin(in0(VOLUME),       0.0, 1.0, -60.0,   -2.0);
+        const float filterMorphParam         = linToLin(in0(FILTERMORPH),  0.0, 1.0,   0.0, 0.9999); // Set range to 0.9999 to avoid linear blend glitch (should no longer be necessary when using std::lerp, but apparently still is....)
+        const float extmixParam              = linToLin(in0(EXTMIX),       0.0, 1.0,   0.0,    1.0); // External input mix
 
-
-        
         // Create interpolation slopes
         // The slope signal is used to interpolate between the last value and the new value within the audio render loop
+        SlopeSignal<float> slopedPitchbend   = makeSlope(pitchbendParam,   m_pitchbend);
         SlopeSignal<float> slopedWaveform    = makeSlope(waveformParam,    m_waveform);
         SlopeSignal<float> slopedCutoff      = makeSlope(cutoffParam,      m_cutoff);
         SlopeSignal<float> slopedResonance   = makeSlope(resonanceParam,   m_resonance);
@@ -92,7 +90,6 @@ namespace Open303 {
         SlopeSignal<float> slopedVolume      = makeSlope(volumeParam,      m_volume);
         SlopeSignal<float> slopedFilterMorph = makeSlope(filterMorphParam, m_filtermorph);
         SlopeSignal<float> slopedExtmix      = makeSlope(extmixParam,      m_extmix);
-        //SlopeSignal<float> slopedFilterDrive = makeSlope(filterDriveParam, m_filterdrive);
 
         ///////////////////
         // Note-Handling //
@@ -137,6 +134,7 @@ namespace Open303 {
             
             // Update synth params with interpolated value
             // Cast floats to doubles
+            o303.setPitchBend(   static_cast<double>(slopedPitchbend.consume()));
             o303.setWaveform(    static_cast<double>(slopedWaveform.consume()));
             o303.setCutoff(      static_cast<double>(slopedCutoff.consume()));
             o303.setResonance(   static_cast<double>(slopedResonance.consume()));
@@ -145,9 +143,8 @@ namespace Open303 {
             o303.setAccent(      static_cast<double>(slopedAccent.consume()));
             o303.setVolume(      static_cast<double>(slopedVolume.consume()));
             o303.setFilterMorph( static_cast<double>(slopedFilterMorph.consume()));
-            //o303.setFilterDrive( static_cast<double>(slopedFilterDrive.consume()));
-
-            // Set external input mix level and pass sample of ext input
+            
+            // Set external input mix level and pass sample of ext input (cast to double)
             o303.setExtIn(extmixParam, static_cast<double>(in(EXTIN)[i]));
 
             // Call Open303 render function
@@ -158,6 +155,7 @@ namespace Open303 {
         // Update Param State //
         ////////////////////////
 
+        m_pitchbend     = slopedPitchbend.value;
         m_waveform      = slopedWaveform.value;
         m_cutoff        = slopedCutoff.value;
         m_resonance     = slopedResonance.value;
@@ -167,7 +165,6 @@ namespace Open303 {
         m_volume        = slopedVolume.value;
         m_filtermorph   = slopedFilterMorph.value;
         m_extmix        = slopedExtmix.value;
-        //m_filterdrive   = slopedFilterDrive.value;
 
         ///////////////////////////////
         // Update Previous Gate/Note //

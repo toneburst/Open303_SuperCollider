@@ -33,6 +33,7 @@ private:
   const int accentThreshold{100};
 
   // Param state (initialised in constructor)
+  float m_pitchbend;
   float m_waveform;
   float m_cutoff;
   float m_resonance;
@@ -43,7 +44,6 @@ private:
   float m_filtermorph;
   float m_distortion;
   float m_extmix;
-  //float m_filterdrive;
 
   // Input indices enumeration
   enum inputs {
@@ -51,6 +51,7 @@ private:
     NOTENUM,
     NOTEVEL,
     NOTEALLOFF,
+    PITCHBEND,
     WAVEFORM,
     CUTOFF,
     RESONANCE,
@@ -59,7 +60,6 @@ private:
     ACCENT,
     VOLUME,
     FILTERMORPH,
-    DISTORTION,
     EXTMIX,
     EXTIN = 14
   };

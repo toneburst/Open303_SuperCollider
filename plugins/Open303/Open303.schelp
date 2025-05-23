@@ -17,9 +17,11 @@ Trigger a note on event. Gates and note-numbers must be managed in SCLang in a "
 argument:: notenum
 MIDI note number of note-on/off event. 0-127
 argument:: notevel
-MIDI velocity of note-on/off event 0-127. Set to 0 for note-off
+MIDI velocity of note-on/off event 0-127
 argument:: notealloff
 Trigger an all-notes-off event. Must be a single k-rate pulse with a value of 1.0
+argument:: pitchbend
+Pitchbend. 12.0-12.0 range
 argument:: waveform
 Crossfade between triangle and square waveforms. 0.0-1.0 range
 argument:: cutoff
@@ -36,12 +38,10 @@ argument:: volume
 Output volume. 0-1 range
 argument:: filtermorph
 Morph filter reponse from low-pass (emulated TB303) to band-pass to high-pass response. 0-1 range
-argument:: distortion
-Distortion amount. 0-1 range
 argument:: extmix
 External input mix. Fades between internal oscillator and external input. 0-1 range
 argument:: extin
-External audio input. Mixed with internal oscillator and fed to the filter. Mono audio signal
+External audio input. Mixed with internal oscillator and fed through the filter and VCA. Mono audio signal
 
 examples::
 
