@@ -19,7 +19,7 @@ SC_DIR="${SOURCE_DIR}/supercollider"
 INSTALL_DIR="${HOME}/Library/Application Support/SuperCollider/Extensions"
 
 # Create build directory
-cd $PROJ_DIR || 'exit'
+cd "$PROJ_DIR"
 
 # Check if SuperCollider source directory exists
 if [ ! -d "$SC_DIR" ]; then
