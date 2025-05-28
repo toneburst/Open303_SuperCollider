@@ -1,5 +1,6 @@
 /**
 Open303 extension example, with default parameter values, mono-legato note-handling and parameter control by MIDI CC.
+Added audio FX.
 toneburst 2025-05-21
 */
 
@@ -11,7 +12,7 @@ toneburst 2025-05-21
 
 s.waitForBoot {
 	SynthDef.new("AcidBass", {
-		arg out,
+		arg outbus,
 		gate        = 0.0,   // Trigger note
 		notenum     = 60.0,  // MIDI note number of current note
 		notevel     = 64.0,  // MIDI note velocity of current note
@@ -29,6 +30,7 @@ s.waitForBoot {
 		// Declare Vars //
 		//////////////////
 
+		var notealloff = NamedControl.tr(\notealloff);
 		var sig; // Output
 
 		///////////////////////////
@@ -56,13 +58,74 @@ s.waitForBoot {
 		// Final Output //
 		//////////////////
 
-		Out.ar(out, [sig, sig], 1.0);
+		Out.ar(outbus, sig);
 	}).add;
-};
+
+	SynthDef.new("AcidFX", {
+		arg inbus,
+		\distdrive,    // Distortion drive
+		\disttone,     // Distortion tone
+		out,
+		pan = 0.0;    // Output pan L-R (0 = centre)
+
+		var drive, tone, freq, filtertype, dist, sig;
+
+		sig = In.ar(inbus, 1);
+
+		////////////////
+		// Distortion //
+		////////////////
+
+		// Distortion from:
+		// https://github.com/21echoes/pedalboard/blob/master/lib/fx/Distortion.sc
+
+		// First we feed into a HPF to filter out sub-20Hz
+		dist = HPF.ar(sig, 25);
+
+		// Then we feed into the distortion
+		// Drive controls 1 to 5x the volume with hard-clipping
+		dist = (dist * LinExp.kr(\distdrive.kr(0.5), 0, 1, 1, 5)).distort;
+
+		// Then we feed into the Tone section
+		// Tone controls a MMF, exponentially ranging from 10 Hz - 21 kHz
+		// Tone above 0.75 switches to a HPF
+		tone = \disttone.kr(0.5);
+		freq = Select.kr(tone > 0.75, [
+			Select.kr(tone > 0.2, [
+				LinExp.kr(tone, 0, 0.2, 10, 400),
+				LinExp.kr(tone, 0.2, 0.75, 400, 20000),
+			]),
+			LinExp.kr(tone, 0.75, 1, 20, 21000),
+		]);
+		filtertype = Select.kr(tone > 0.75, [0, 1]);
+		dist = DFM1.ar(
+			in:         dist,
+			freq:       freq,
+			res:        0.1,
+			inputgain:  1.0,
+			type:       filtertype,
+			noiselevel: 0.0003
+		).softclip;
+
+		////////////
+		// Output //
+		////////////
+
+		Out.ar(out, Pan2.ar(dist, pan));
+
+	}).add;
+
+}; // End wait for server boot
 
 )
 
 ( // Start it
+
+//////////////////
+// Setup Busses //
+//////////////////
+
+~fxbus = Bus.audio(s, 1);
 
 /////////////////
 // Setup Synth //
@@ -74,6 +137,17 @@ s.waitForBoot {
 
 // Create bassline synth instance
 ~bassline = Synth(\AcidBass);
+~bassline.set(\outbus, ~fxbus);
+
+//////////////
+// Setup FX //
+//////////////
+
+// Add FX after synth to setup correct execution-order
+// See: "Getting at all in the Right Order"
+// https://doc.sccode.org/Tutorials/Getting-Started/11-Busses.html
+~fx = Synth.after(~bassline, \AcidFX);
+~fx.set(\inbus, ~fxbus, \out, 1);
 
 ////////////////////////
 // Setup MIDI Control //
@@ -111,6 +185,7 @@ MIDIFunc.noteOff({ |notevel, notenum|
 });
 
 MIDIFunc.bend({|val, chan, src|
+	linlin(val, 0, 16383, -12.0, 12.0).postln;
 	~bassline.set(\pitchbend, linlin(val, 0, 16383, -12.0, 12.0));
 });
 
@@ -139,11 +214,11 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:26);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\filtermorph, val / 127);
+	~fx.set(\distdrive, val / 127);
 }, ccNum:27);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\volume, val / 127);
+	~fx.set(\disttone, val / 127);
 }, ccNum:28);
 
 )

@@ -2,7 +2,7 @@
 
 Author: toneburst
 
-SuperCollider wrapper aroundDSP code of [Open303](https://github.com/toneburst/Open303/tree/main) by Robin Schmidt.
+SuperCollider wrapper around the DSP code of [Open303](https://github.com/toneburst/Open303/tree/main) by [@RobinSchmidt](https://github.com/RobinSchmidt).
 All credit for the DSP work goes to Robin. Big thanks to you and to the many contributors in the [KVR community](https://www.kvraudio.com/forum/viewtopic.php?t=262829) for this amazing project!
 
 I've naively hacked in some additional features and exposed some original controls that were internal-only. See SuperCollider [helpfile](https://github.com/toneburst/Open303_SuperCollider/blob/main/plugins/Open303/Open303.schelp) and [example](https://github.com/toneburst/Open303_SuperCollider/tree/main/examples) SC script for details, but to summarise, the main additions are:
