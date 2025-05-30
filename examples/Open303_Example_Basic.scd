@@ -1,6 +1,6 @@
 /**
 Open303 extension example, with default parameter values, mono-legato note-handling and parameter control by MIDI CC.
-toneburst 2025-05-21
+toneburst 2025-05
 */
 
 //////////////////////////

@@ -1,6 +1,6 @@
 /**
-Example with FX.
-toneburst 2025-05-21
+Open303 example with added FX.
+toneburst 2025-05
 */
 
 //////////////////////////

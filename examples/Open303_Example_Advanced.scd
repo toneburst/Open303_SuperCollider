@@ -1,6 +1,6 @@
 /**
 Advanced Open303 extension example, demonstrating external input (sub-oscillator and noise).
-toneburst 2025-05-21
+toneburst 2025-05
 */
 
 //////////////////////////
