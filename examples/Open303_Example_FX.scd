@@ -1,6 +1,5 @@
 /**
-Open303 extension example, with default parameter values, mono-legato note-handling and parameter control by MIDI CC.
-Added audio FX.
+Example with FX.
 toneburst 2025-05-21
 */
 
@@ -8,9 +7,12 @@ toneburst 2025-05-21
 // Define Open303 Synth //
 //////////////////////////
 
-( // SynthDef
+( // SynthDefs
 
 s.waitForBoot {
+
+	// Define Open303 Synth
+
 	SynthDef.new("AcidBass", {
 		arg outbus,
 		gate        = 0.0,   // Trigger note
@@ -31,7 +33,8 @@ s.waitForBoot {
 		//////////////////
 
 		var notealloff = NamedControl.tr(\notealloff);
-		var sig; // Output
+		// Create output
+		var sig;
 
 		///////////////////////////
 		// Create Open303 Output //
@@ -43,6 +46,7 @@ s.waitForBoot {
 			gate:			gate,
 			notenum:		notenum,
 			notevel:		notevel,
+			notealloff:		notealloff,
 			pitchbend:      pitchbend,
 			waveform:		waveform,
 			cutoff:			cutoff,
@@ -61,97 +65,109 @@ s.waitForBoot {
 		Out.ar(outbus, sig);
 	}).add;
 
+	// Define FX
+
 	SynthDef.new("AcidFX", {
 		arg inbus,
-		\distdrive,    // Distortion drive
-		\disttone,     // Distortion tone
-		out,
-		pan = 0.0;    // Output pan L-R (0 = centre)
+		disttype      = 0,
+		distdrive     = 0.5,
+		disttone      = 0.5,
+		res           = 0.1,
+		noise         = 0.0003,
+		fxmix         = 1.0,
+		pan           = 0,
+		out;
 
-		var drive, tone, freq, filtertype, dist, sig;
+		var freq, filtertype, sig, wet;
 
+		// Dry input from bus
 		sig = In.ar(inbus, 1);
 
-		////////////////
-		// Distortion //
-		////////////////
+		////////////////////////////
+		// Distortion / Overdrive //
+		////////////////////////////
 
-		// Distortion from:
-		// https://github.com/21echoes/pedalboard/blob/master/lib/fx/Distortion.sc
+		// Adapted from overdrive and distortion FX by 21echoes:
+		// https://github.com/21echoes/pedalboard/tree/master
 
-		// First we feed into a HPF to filter out sub-20Hz
-		dist = HPF.ar(sig, 25);
+		// Wet signal. First we feed into a HPF to filter out sub-20Hz
+		wet = HPF.ar(sig, 25);
 
-		// Then we feed into the distortion
-		// Drive controls 1 to 5x the volume with hard-clipping
-		dist = (dist * LinExp.kr(\distdrive.kr(0.5), 0, 1, 1, 5)).distort;
+		// ...then we feed into selectable overdrive/distortion
+		wet = Select.ar(disttype > 0.5, [
+			// Drive controls 1 to 5x the volume with soft-clipping
+			(wet * LinLin.kr(distdrive, 0, 1, 1, 5)).softclip,
+			// Drive controls 1 to 5x the volume with hard-clipping
+			(wet * LinExp.kr(distdrive, 0, 1, 1, 5)).distort
+		]);
 
-		// Then we feed into the Tone section
+		// ...then into the Tone section
 		// Tone controls a MMF, exponentially ranging from 10 Hz - 21 kHz
 		// Tone above 0.75 switches to a HPF
-		tone = \disttone.kr(0.5);
-		freq = Select.kr(tone > 0.75, [
-			Select.kr(tone > 0.2, [
-				LinExp.kr(tone, 0, 0.2, 10, 400),
-				LinExp.kr(tone, 0.2, 0.75, 400, 20000),
+		freq = Select.kr(disttone > 0.75, [
+			Select.kr(disttone > 0.2, [
+				LinExp.kr(disttone, 0, 0.2, 10, 400),
+				LinExp.kr(disttone, 0.2, 0.75, 400, 20000),
 			]),
-			LinExp.kr(tone, 0.75, 1, 20, 21000),
+			LinExp.kr(disttone, 0.75, 1, 20, 21000),
 		]);
-		filtertype = Select.kr(tone > 0.75, [0, 1]);
-		dist = DFM1.ar(
-			in:         dist,
-			freq:       freq,
-			res:        0.1,
-			inputgain:  1.0,
-			type:       filtertype,
-			noiselevel: 0.0003
+
+		// ...finally we feed the signal into the filter section
+		// Switch filter-type
+		filtertype = Select.kr(disttone > 0.75, [0, 1]);
+		wet = DFM1.ar(
+			in:          wet,
+			freq:        freq,
+			res:         res,
+			inputgain:   1.0,
+			type:        filtertype,
+			noiselevel:  noise
 		).softclip;
 
-		////////////
-		// Output //
-		////////////
+		// Naive level-compensation
+		wet = wet * LinLin.kr(distdrive, 0, 1, 0.75, 0.5);
 
-		Out.ar(out, Pan2.ar(dist, pan));
+		// Wet/dry mix distorted and dry signals
+		sig = XFade2.ar(sig, wet, fxmix);
 
+		//////////////////
+		// Final Output //
+		//////////////////
+
+		Out.ar(out, Pan2.ar(sig, pan));
 	}).add;
-
-}; // End wait for server boot
+};
 
 )
 
 ( // Start it
 
-//////////////////
-// Setup Busses //
-//////////////////
+//////////////
+// FX Setup //
+//////////////
 
+// Create FX bus (mono audio)
 ~fxbus = Bus.audio(s, 1);
 
 /////////////////
 // Setup Synth //
 /////////////////
 
-// We need to setup a "mono-legato" note-handling system so that the synth can correctly add slides to overlapping notes.
-// Create note-stack list. This will contain MIDI note numbers of all currently-held keys
-~notestack = List[];
-
-// Create bassline synth instance
+// Create bassline synth instanceand set output bus
 ~bassline = Synth(\AcidBass);
 ~bassline.set(\outbus, ~fxbus);
 
-//////////////
-// Setup FX //
-//////////////
-
-// Add FX after synth to setup correct execution-order
-// See: "Getting at all in the Right Order"
-// https://doc.sccode.org/Tutorials/Getting-Started/11-Busses.html
+// Create FX instance, adding after ~bassline and set input bus
 ~fx = Synth.after(~bassline, \AcidFX);
 ~fx.set(\inbus, ~fxbus, \out, 1);
 
 ////////////////////////
 // Setup MIDI Control //
 ////////////////////////
+
+// We need to setup a "mono-legato" note-handling system so that the synth can correctly add slides to overlapping notes.
+// Create note-stack list. This will contain MIDI note numbers of all currently-held keys
+~notestack = List[];
 
 // Start MIDI
 MIDIClient.init;
@@ -185,7 +201,6 @@ MIDIFunc.noteOff({ |notevel, notenum|
 });
 
 MIDIFunc.bend({|val, chan, src|
-	linlin(val, 0, 16383, -12.0, 12.0).postln;
 	~bassline.set(\pitchbend, linlin(val, 0, 16383, -12.0, 12.0));
 });
 
@@ -210,7 +225,7 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:25);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~bassline.set(\accent, val / 127);
+	~fx.set(\fxmix, LinLin.kr(val, 0, 127, -1.0, 1.0));
 }, ccNum:26);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|

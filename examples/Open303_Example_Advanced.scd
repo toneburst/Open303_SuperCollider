@@ -1,6 +1,5 @@
 /**
-Advanced Open303 extension example.
-The external input feature opens up a lot of possibilities! Here I've added a squarewave sub-oscillator and tuned noise.
+Advanced Open303 extension example, demonstrating external input (sub-oscillator and noise).
 toneburst 2025-05-21
 */
 
@@ -74,6 +73,7 @@ s.waitForBoot {
 			gate:			gate,
 			notenum:		notenum,
 			notevel:		notevel,
+			notealloff:		notealloff,
 			pitchbend:      pitchbend,
 			waveform:		waveform,
 			cutoff:			cutoff,
@@ -91,7 +91,7 @@ s.waitForBoot {
 		// Final Output //
 		//////////////////
 
-		Out.ar(out, Pan2.ar(sig, pan));
+		Out.ar(out, Pan2.ar(sig, pan, 1.0));
 	}).add;
 };
 

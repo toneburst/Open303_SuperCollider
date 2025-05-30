@@ -23,13 +23,16 @@ s.waitForBoot {
 		decay       = 0.5,   // Filter envelope decay
 		accent      = 0.5,   // Accent amount
 		volume      = 0.9,   // Synth output volume
-		filtermorph = 0.0;   // Filter-morph 303 -> Bandpass -> Highpass
+		filtermorph = 0.0,   // Filter-morph 303 -> Bandpass -> Highpass
+		pan         = 0.0;   // Output pan L-R (0 = centre)
 
 		//////////////////
 		// Declare Vars //
 		//////////////////
 
-		var sig; // Output
+		var notealloff = NamedControl.tr(\notealloff);
+		// Create output
+		var sig;
 
 		///////////////////////////
 		// Create Open303 Output //
@@ -41,6 +44,7 @@ s.waitForBoot {
 			gate:			gate,
 			notenum:		notenum,
 			notevel:		notevel,
+			notealloff:		notealloff,
 			pitchbend:      pitchbend,
 			waveform:		waveform,
 			cutoff:			cutoff,
@@ -56,7 +60,7 @@ s.waitForBoot {
 		// Final Output //
 		//////////////////
 
-		Out.ar(out, [sig, sig], 1.0);
+		Out.ar(out, Pan2.ar(sig, pan, 1.0));
 	}).add;
 };
 
@@ -111,6 +115,7 @@ MIDIFunc.noteOff({ |notevel, notenum|
 });
 
 MIDIFunc.bend({|val, chan, src|
+	linlin(val, 0, 16383, -12.0, 12.0).postln;
 	~bassline.set(\pitchbend, linlin(val, 0, 16383, -12.0, 12.0));
 });
 
