@@ -155,4 +155,5 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 
 // Stop it
 ~bassline.free;
+~notestack.free;
 MIDIdef.freeAll;
