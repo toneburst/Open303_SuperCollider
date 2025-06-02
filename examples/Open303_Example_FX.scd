@@ -11,8 +11,11 @@ toneburst 2025-05
 
 s.waitForBoot {
 
-	    // Define Open303 Synth
-		SynthDef.new("AcidBass", {
+	///////////////////
+	// Open303 Synth //
+	///////////////////
+
+	SynthDef.new("AcidBass", {
 		arg outbus,
 		gate        = 0.0,   // Trigger note
 		notenum     = 60.0,  // MIDI note number of current note
@@ -25,18 +28,10 @@ s.waitForBoot {
 		decay       = 0.5,   // Filter envelope decay
 		accent      = 0.5;   // Accent amount
 
-		//////////////////
-		// Declare Vars //
-		//////////////////
-
 		var notealloff = NamedControl.tr(\notealloff);
-		// Create output
 		var sig;
 
-		///////////////////////////
-		// Create Open303 Output //
-		///////////////////////////
-
+		// Create Open303 Output
 		// Synth. Requires Open303_SuperCollider extension from:
 		// https://github.com/toneburst/Open303_SuperCollider/tree/main
 		sig = Open303.ar(
@@ -53,20 +48,19 @@ s.waitForBoot {
 			accent:			accent
 		);
 
-		//////////////////
-		// Final Output //
-		//////////////////
-
+		// Final Output
 		Out.ar(outbus, [sig, sig]);
 	}).add;
 
-	// Define FX
+	///////////////////////////
+	// Overdrive/ Distortion //
+	///////////////////////////
 
 	SynthDef.new("FXDistortion", {
 		arg inbus,
-		type      = 0,
-		drive         = 0.5,
-		tone          = 0.5,
+		type          = 0,
+		distdrive     = 0.5,
+		disttone      = 0.5,
 		res           = 0.1,
 		noise         = 0.0003,
 		fxmix         = 1.0,
@@ -77,10 +71,6 @@ s.waitForBoot {
 		// Dry input from bus
 		sig = In.ar(inbus, 1);
 
-		////////////////////////////
-		// Distortion / Overdrive //
-		////////////////////////////
-
 		// Adapted from overdrive and distortion FX by 21echoes:
 		// https://github.com/21echoes/pedalboard/tree/master
 
@@ -90,25 +80,25 @@ s.waitForBoot {
 		// ...then we feed into selectable overdrive/distortion
 		wet = Select.ar(type > 0.5, [
 			// Drive controls 1 to 5x the volume with soft-clipping
-			(wet * LinLin.kr(drive, 0, 1, 1, 5)).softclip,
+			(wet * LinLin.kr(distdrive, 0, 1, 1, 5)).softclip,
 			// Drive controls 1 to 5x the volume with hard-clipping
-			(wet * LinExp.kr(drive, 0, 1, 1, 5)).distort
+			(wet * LinExp.kr(distdrive, 0, 1, 1, 5)).distort
 		]);
 
 		// ...then into the Tone section
 		// Tone controls a MMF, exponentially ranging from 10 Hz - 21 kHz
 		// Tone above 0.75 switches to a HPF
-		freq = Select.kr(tone > 0.75, [
-			Select.kr(tone > 0.2, [
-				LinExp.kr(tone, 0, 0.2, 10, 400),
-				LinExp.kr(tone, 0.2, 0.75, 400, 20000),
+		freq = Select.kr(disttone > 0.75, [
+			Select.kr(disttone > 0.2, [
+				LinExp.kr(disttone, 0, 0.2, 10, 400),
+				LinExp.kr(disttone, 0.2, 0.75, 400, 20000),
 			]),
-			LinExp.kr(tone, 0.75, 1, 20, 21000),
+			LinExp.kr(disttone, 0.75, 1, 20, 21000),
 		]);
 
 		// ...finally we feed the signal into the filter section
 		// Switch filter-type
-		filtertype = Select.kr(tone > 0.75, [0, 1]);
+		filtertype = Select.kr(disttone > 0.75, [0, 1]);
 		wet = DFM1.ar(
 			in:          wet,
 			freq:        freq,
@@ -119,17 +109,17 @@ s.waitForBoot {
 		).softclip;
 
 		// Naive level-compensation
-		wet = LinLin.ar(drive, 0, 1, 0.5, 0.25) * wet;
+		wet = LinLin.ar(distdrive, 0, 1, 0.5, 0.25) * wet;
 
 		// Wet/dry mix distorted and dry signals
 		sig = XFade2.ar(sig, wet, fxmix);
 
-		//////////////////
-		// Final Output //
-		//////////////////
-
 		Out.ar(outbus, [sig, sig]);
 	}).add;
+
+	////////////
+	// Chorus //
+	////////////
 
     SynthDef.new("FXChorus", {
 		arg inbus,
@@ -143,6 +133,9 @@ s.waitForBoot {
 
 	    // Dry input from bus
 		sig = In.ar(inbus, 1);
+
+		// Adapted from chorus FX by 21echoes:
+		// https://github.com/21echoes/pedalboard/tree/master
 
 		rate = chorusrate;
 		rate = Select.kr(rate > 0.5, [
@@ -171,6 +164,10 @@ s.waitForBoot {
 
     }).add;
 
+	////////////
+	// Output //
+	////////////
+
     SynthDef.new("FXOutput", {
 		arg inbus,
 	    pan           = 0,
@@ -182,6 +179,7 @@ s.waitForBoot {
 	     // Dry input from bus
 		sig = In.ar(inbus, 1);
 
+		// Pass signal to final output, with volume and pan control
 	    Out.ar(out, Pan2.ar(sig, pan, volume));
     }).add;
 }
@@ -194,7 +192,7 @@ s.waitForBoot {
 // FX Setup //
 //////////////
 
-// Create FX bus(ses) (stereo audio)
+// Create FX bus (stereo audio)
 ~fxbus = Bus.audio(s, 2);
 
 /////////////////
@@ -205,7 +203,7 @@ s.waitForBoot {
 // Create note-stack list. This will contain MIDI note numbers of all currently-held keys
 ~notestack = List[];
 
-// Create bassline synth instanceand set output bus
+// Create bassline synth instance and set output bus
 ~bassline = Synth(\AcidBass);
 ~bassline.set(\outbus, ~fxbus);
 
@@ -213,11 +211,11 @@ s.waitForBoot {
 ~distortion = Synth.after(~bassline, \FXDistortion);
 ~distortion.set(\inbus, ~fxbus, \outbus, ~fxbus);
 
-// Create Chorus FX instance, adding after ~bassline and set input bus
+// Create Chorus FX instance, adding after ~chorus and set input bus
 ~chorus = Synth.after(~distortion, \FXChorus);
 ~chorus.set(\inbus, ~fxbus, \outbus, ~fxbus);
 
-// Create output
+// Create output at end of chain
 ~output = Synth.after(~chorus, \FXOutput);
 ~output.set(\inbus, ~fxbus, \output, 0);
 
@@ -285,11 +283,11 @@ MIDIFunc.cc({ |val, ccNum, chan, src|
 }, ccNum:26);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~distortion.set(\drive, val / 127);
+	~distortion.set(\distdrive, val / 127);
 }, ccNum:27);
 
 MIDIFunc.cc({ |val, ccNum, chan, src|
-	~distortion.set(\tone, val / 127);
+	~distortion.set(\disttone, val / 127);
 }, ccNum:28);
 
 )
